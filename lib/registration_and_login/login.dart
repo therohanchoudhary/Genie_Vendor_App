@@ -2,7 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:vendor_app/menu/categories.dart';
+import 'package:vendor_app/bottom_navigation_bar.dart';
 import 'package:vendor_app/registration_and_login/register.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -101,7 +101,8 @@ class _LoginScreenState extends State<LoginScreen> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (BuildContext context) => CategoryScreen()));
+                            builder: (BuildContext context) =>
+                                BottomNavigationBarScreen()));
                   } on FirebaseAuthException catch (e) {
                     print(e);
                     setState(() {

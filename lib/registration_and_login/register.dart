@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:vendor_app/registration_and_login/login.dart';
@@ -75,8 +74,8 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                     mobileNumberEntered),
                 _input('Password', 80, 1, TextInputType.visiblePassword,
                     passwordEntered),
-                _input('Address', 80, 4, TextInputType.multiline,
-                    addressEntered),
+                _input(
+                    'Address', 80, 4, TextInputType.multiline, addressEntered),
                 SizedBox(height: 30),
                 GestureDetector(
                   onTap: () async {
@@ -84,32 +83,26 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                       setState(() {
                         _showProgressIndicator = true;
                       });
-                      UserCredential user = await FirebaseAuth.instance
-                          .createUserWithEmailAndPassword(
-                              email: emailEntered.text,
-                              password: passwordEntered.text);
 
-                      if (user != null) {
-                        await databaseReference
-                            .collection('seller')
-                            .doc(emailEntered.text.toString())
-                            .set({
-                          "name": usernameEntered.text,
-                          "email": emailEntered.text,
-                          "address": addressEntered.text,
-                          "password": passwordEntered.text,
-                          "mobileNumber": mobileNumberEntered.text,
-                        });
-                        setState(() {
-                          _showProgressIndicator = false;
-                        });
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (BuildContext context) =>
-                                    BusinessDetails(
-                                        userEmail: emailEntered.text)));
-                      }
+                      await databaseReference
+                          .collection('registerSeller')
+                          .doc(emailEntered.text.toString())
+                          .set({
+                        "name": usernameEntered.text,
+                        "email": emailEntered.text,
+                        "address": addressEntered.text,
+                        "password": passwordEntered.text,
+                        "mobileNumber": mobileNumberEntered.text,
+                      });
+                      setState(() {
+                        _showProgressIndicator = false;
+                      });
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (BuildContext context) =>
+                                  BusinessDetails(
+                                      userEmail: emailEntered.text)));
                     } catch (e) {
                       print("Error Error Error Error $e");
                       Fluttertoast.showToast(

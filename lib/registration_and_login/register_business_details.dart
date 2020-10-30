@@ -124,7 +124,7 @@ class _BusinessDetailsState extends State<BusinessDetails> {
                   onTap: () async {
                     _showProgressIndicator = true;
                     await FirebaseFirestore.instance
-                        .collection('seller')
+                        .collection('registerSeller')
                         .doc(widget.userEmail)
                         .update({
                       'businessDetail': _choice,

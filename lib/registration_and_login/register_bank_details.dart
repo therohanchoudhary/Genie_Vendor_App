@@ -139,7 +139,7 @@ class _BankDetails extends State<BankDetails> {
                       showProgressIndicator = true;
                     });
                     await FirebaseFirestore.instance
-                        .collection('seller')
+                        .collection('registerSeller')
                         .doc(widget.userEmail)
                         .update({
                       'bankDetail': _choice,
