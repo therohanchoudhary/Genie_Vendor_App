@@ -1,9 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vendor_app/bottom_navigation_bar.dart';
 import 'package:vendor_app/registration_and_login/register.dart';
+
+import '../not_registered_user_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -91,18 +93,31 @@ class _LoginScreenState extends State<LoginScreen> {
                         email: emailEntered.text,
                         password: passwordEntered.text);
 
-                    SharedPreferences prefs =
-                        await SharedPreferences.getInstance();
-                    prefs.setBool('boolValue', true);
-
                     setState(() {
                       showSpinner = false;
                     });
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (BuildContext context) =>
-                                BottomNavigationBarScreen()));
+
+                    bool verified = false;
+                    await FirebaseFirestore.instance
+                        .collection("registerSeller")
+                        .doc(emailEntered.text)
+                        .get()
+                        .then((value) {
+                      verified = value.data()["verified"];
+                    });
+
+                    if (verified == true)
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (BuildContext context) =>
+                                  BottomNavigationBarScreen()));
+                    else
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (BuildContext context) =>
+                                  WaitingScreen()));
                   } on FirebaseAuthException catch (e) {
                     print(e);
                     setState(() {

@@ -12,20 +12,17 @@ class BottomNavigationBarScreen extends StatefulWidget {
 }
 
 class _BottomNavigationBarScreenState extends State<BottomNavigationBarScreen> {
+  int _currentIndex = 0;
 
+  void onTabTapped(int index) {
+    setState(() {
+      _currentIndex = index;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-
     User user = FirebaseAuth.instance.currentUser;
-
-    int _currentIndex = 0;
-
-    void onTabTapped(int index) {
-      setState(() {
-        _currentIndex = index;
-      });
-    }
 
     final List<Widget> _children = [
       CategoryScreen(email: user.email),

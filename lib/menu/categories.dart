@@ -3,9 +3,10 @@ import 'package:vendor_app/menu/TabBarMenu.dart';
 import 'package:vendor_app/menu/add_product.dart';
 
 class CategoryScreen extends StatefulWidget {
-
   final String email;
+
   CategoryScreen({this.email});
+
   @override
   _CategoryScreenState createState() => _CategoryScreenState();
 }
@@ -27,10 +28,8 @@ class _CategoryScreenState extends State<CategoryScreen> {
 
     _gridCardWidget(int index) {
       return GestureDetector(
-        onTap: () => Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (BuildContext context) => TabBarMenu())),
+        onTap: () => Navigator.push(context,
+            MaterialPageRoute(builder: (BuildContext context) => TabBarMenu())),
         child: Container(
             height: height / 4.7,
             width: width / 2.3,
@@ -53,8 +52,8 @@ class _CategoryScreenState extends State<CategoryScreen> {
                 SizedBox(height: height / 150),
                 Text(categoryList[index],
                     textAlign: TextAlign.center,
-                    style: TextStyle(
-                        color: Colors.black, fontSize: height / 70)),
+                    style:
+                        TextStyle(color: Colors.black, fontSize: height / 70)),
               ],
             )),
       );
@@ -100,8 +99,14 @@ class _CategoryScreenState extends State<CategoryScreen> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => Navigator.push(context,
-            MaterialPageRoute(builder: (BuildContext context) => AddProduct(emailSeller: widget.email,))),
+        onPressed: () => {
+          print(widget.email),
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (BuildContext context) =>
+                      AddProduct(emailSeller: widget.email)))
+        },
         backgroundColor: Colors.blue,
         child: Icon(Icons.add, color: Colors.white),
       ),
