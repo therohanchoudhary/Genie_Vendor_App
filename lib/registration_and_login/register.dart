@@ -84,25 +84,51 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                         _showProgressIndicator = true;
                       });
 
-                      await databaseReference
-                          .collection('registerSeller')
-                          .doc(emailEntered.text.toString())
-                          .set({
-                        "name": usernameEntered.text,
-                        "email": emailEntered.text,
-                        "address": addressEntered.text,
-                        "password": passwordEntered.text,
-                        "mobileNumber": mobileNumberEntered.text,
+                      bool verified = false;
+                      await FirebaseFirestore.instance
+                          .collection("registerSeller")
+                          .doc(emailEntered.text)
+                          .get()
+                          .then((value) {
+                        verified = value.data()["verified"];
                       });
-                      setState(() {
-                        _showProgressIndicator = false;
-                      });
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (BuildContext context) =>
-                                  BusinessDetails(
-                                      userEmail: emailEntered.text)));
+
+                      if (verified != true) {
+                        await databaseReference
+                            .collection('registerSeller')
+                            .doc(emailEntered.text.toString())
+                            .set({
+                          "name": usernameEntered.text,
+                          "email": emailEntered.text,
+                          "address": addressEntered.text,
+                          "password": passwordEntered.text,
+                          "mobileNumber": mobileNumberEntered.text,
+                          "verified": false,
+                          "productsUploaded": 0
+                        });
+                        setState(() {
+                          _showProgressIndicator = false;
+                        });
+
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (BuildContext context) =>
+                                    BusinessDetails(
+                                        userEmail: emailEntered.text)));
+                      } else {
+                        Fluttertoast.showToast(
+                            msg: "This email address is already registered",
+                            toastLength: Toast.LENGTH_SHORT,
+                            gravity: ToastGravity.CENTER,
+                            timeInSecForIosWeb: 1,
+                            backgroundColor: Colors.grey,
+                            textColor: Colors.white,
+                            fontSize: 12.0);
+                        setState(() {
+                          _showProgressIndicator = false;
+                        });
+                      }
                     } catch (e) {
                       print("Error Error Error Error $e");
                       Fluttertoast.showToast(

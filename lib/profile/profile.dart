@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:vendor_app/registration_and_login/login.dart';
@@ -12,14 +10,8 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
-    var height = MediaQuery
-        .of(context)
-        .size
-        .height;
-    var width = MediaQuery
-        .of(context)
-        .size
-        .width;
+    var height = MediaQuery.of(context).size.height;
+    var width = MediaQuery.of(context).size.width;
 
     _widget(String text) {
       return Padding(
@@ -92,11 +84,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             width: width / 2.5,
                             child: Center(
                                 child: Text(
-                                  'Edit Profile',
-                                  style: TextStyle(color: Colors.blue[300],
-                                      fontSize: width / 35,
-                                      fontWeight: FontWeight.bold),
-                                )),
+                              'Edit Profile',
+                              style: TextStyle(
+                                  color: Colors.blue[300],
+                                  fontSize: width / 35,
+                                  fontWeight: FontWeight.bold),
+                            )),
                           )
                         ],
                       )
@@ -124,7 +117,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   },
                   child: Text(
                     'Signout',
-                    style: TextStyle(color: Colors.black, fontSize: height / 70),
+                    style:
+                        TextStyle(color: Colors.black, fontSize: height / 70),
                   )),
               SizedBox(height: 40),
             ],

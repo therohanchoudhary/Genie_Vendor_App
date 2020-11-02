@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:vendor_app/order/TabBarOrder.dart';
 import 'package:vendor_app/menu/categories.dart';
@@ -11,23 +12,28 @@ class BottomNavigationBarScreen extends StatefulWidget {
 }
 
 class _BottomNavigationBarScreenState extends State<BottomNavigationBarScreen> {
-  int _currentIndex = 0;
 
-  void onTabTapped(int index) {
-    setState(() {
-      _currentIndex = index;
-    });
-  }
-
-  final List<Widget> _children = [
-    CategoryScreen(),
-    TabBarOrder(),
-    PayInScreen(),
-    ProfileScreen(),
-  ];
 
   @override
   Widget build(BuildContext context) {
+
+    User user = FirebaseAuth.instance.currentUser;
+
+    int _currentIndex = 0;
+
+    void onTabTapped(int index) {
+      setState(() {
+        _currentIndex = index;
+      });
+    }
+
+    final List<Widget> _children = [
+      CategoryScreen(email: user.email),
+      TabBarOrder(),
+      PayInScreen(),
+      ProfileScreen(),
+    ];
+
     return Scaffold(
       body: _children[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(

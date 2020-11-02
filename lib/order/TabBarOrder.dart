@@ -30,19 +30,19 @@ class _TabBarOrderState extends State<TabBarOrder> {
                 Tab(
                     child: Text('Placed(60)',
                         style: TextStyle(
-                            color: Colors.black, fontSize: width / 42))),
+                            color: Colors.black, fontSize: width / 50))),
                 Tab(
                     child: Text('Packing(10)',
                         style: TextStyle(
-                            color: Colors.black, fontSize: width / 42))),
+                            color: Colors.black, fontSize: width / 50))),
                 Tab(
                     child: Text('Ready(20)',
                         style: TextStyle(
-                            color: Colors.black, fontSize: width / 42))),
+                            color: Colors.black, fontSize: width / 50))),
                 Tab(
                     child: Text('Shipping(20)',
                         style: TextStyle(
-                            color: Colors.black, fontSize: width / 42))),
+                            color: Colors.black, fontSize: width / 53))),
               ],
             ),
             Container(

@@ -135,7 +135,7 @@ class _OrderScreenState extends State<OrderScreen> {
                       children: [
                         Center(
                           child: Container(
-                            height: height / 3,
+                            height: height / 2.6,
                             width: width / 1.2,
                             padding: EdgeInsets.symmetric(
                                 horizontal: width / 20, vertical: height / 80),

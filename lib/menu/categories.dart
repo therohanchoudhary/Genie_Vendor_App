@@ -3,6 +3,9 @@ import 'package:vendor_app/menu/TabBarMenu.dart';
 import 'package:vendor_app/menu/add_product.dart';
 
 class CategoryScreen extends StatefulWidget {
+
+  final String email;
+  CategoryScreen({this.email});
   @override
   _CategoryScreenState createState() => _CategoryScreenState();
 }
@@ -98,7 +101,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => Navigator.push(context,
-            MaterialPageRoute(builder: (BuildContext context) => AddProduct())),
+            MaterialPageRoute(builder: (BuildContext context) => AddProduct(emailSeller: widget.email,))),
         backgroundColor: Colors.blue,
         child: Icon(Icons.add, color: Colors.white),
       ),

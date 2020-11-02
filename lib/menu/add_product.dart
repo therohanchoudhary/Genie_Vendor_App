@@ -1,23 +1,39 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
+import 'add_product_image.dart';
+
 class AddProduct extends StatefulWidget {
+  final String emailSeller;
+
+  AddProduct({this.emailSeller});
+
   @override
   _AddProductState createState() => _AddProductState();
 }
 
 class _AddProductState extends State<AddProduct> {
+  bool showSpinner = false;
+
+  TextEditingController categoryEntered = TextEditingController();
+  TextEditingController nameEntered = TextEditingController();
+  TextEditingController priceEntered = TextEditingController();
+  TextEditingController descriptionEntered = TextEditingController();
+  TextEditingController offersEntered = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
 
-    _textField(String hintText, var keyBoardType) {
+    _textField(String hintText, var keyBoardType, var controller) {
       return Padding(
         padding: EdgeInsets.symmetric(
             horizontal: height / 40, vertical: height / 80),
         child: TextField(
           maxLines: hintText == 'Description' ? 1 : 1,
           keyboardType: keyBoardType,
+          controller: controller,
           decoration: InputDecoration(
               focusedBorder: OutlineInputBorder(
                 borderSide: BorderSide(color: Colors.blue, width: 2.0),
@@ -44,7 +60,7 @@ class _AddProductState extends State<AddProduct> {
           child: Column(
             children: [
               Stack(
-                alignment: Alignment(1.8,1),
+                alignment: Alignment(1.8, 1),
                 children: [
                   Container(
                     height: height / 5,
@@ -52,38 +68,97 @@ class _AddProductState extends State<AddProduct> {
                     child: Image.network(
                         'https://www.ocado.com/productImages/316/316751011_0_640x640.jpg?identifier=f5b98bc6a016e720dee27da65ec354ca'),
                   ),
-                  Container(
-                    height: height / 16,
-                    width: height / 16,
-                    child: Icon(
-                      Icons.add,
-                      color: Colors.white,
-                      size: height / 20,
+                  GestureDetector(
+                    onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (BuildContext context) =>
+                                ProductAddImage())),
+                    child: Container(
+                      height: height / 16,
+                      width: height / 16,
+                      child: Icon(
+                        Icons.add,
+                        color: Colors.white,
+                        size: height / 20,
+                      ),
+                      decoration: BoxDecoration(
+                          color: Colors.blue[800], shape: BoxShape.rectangle),
                     ),
-                    decoration: BoxDecoration(
-                        color: Colors.blue[800], shape: BoxShape.rectangle),
                   )
                 ],
               ),
-              _textField('Category', TextInputType.name),
-              _textField('Product Name', TextInputType.name),
-              _textField('Price', TextInputType.number),
-              _textField('Description', TextInputType.name),
-              _textField('Offers', TextInputType.name),
+              _textField('Category', TextInputType.name, categoryEntered),
+              _textField('Product Name', TextInputType.name, nameEntered),
+              _textField('Price', TextInputType.number, priceEntered),
+              _textField('Description', TextInputType.name, descriptionEntered),
+              _textField('Offers', TextInputType.name, offersEntered),
               SizedBox(height: height / 40),
               GestureDetector(
-                  onTap: () {},
-                  child: Container(
-                    decoration: BoxDecoration(
-                        color: Colors.blue,
-                        borderRadius: BorderRadius.circular(1000)),
-                    height: height / 15,
-                    width: width / 1.8,
-                    child: Center(
-                        child: Text('Login',
-                            style: TextStyle(
-                                color: Colors.white, fontSize: height / 65))),
-                  )),
+                onTap: () async {
+                  setState(() {
+                    showSpinner = true;
+                  });
+
+                  int x;
+                  String id;
+                  await FirebaseFirestore.instance
+                      .collection("registerSeller")
+                      .doc(widget.emailSeller)
+                      .get()
+                      .then((value) {
+                    x = value.data()["productsUploaded"];
+                    id = value.data()["id"];
+                  });
+                  x++;
+                  await FirebaseFirestore.instance
+                      .collection("registerSeller")
+                      .doc(widget.emailSeller)
+                      .update({"productsUploaded": x});
+                  print(x);
+                  List freq = [];
+                  await FirebaseFirestore.instance
+                      .collection('shop')
+                      .doc('2')
+                      .update({
+                    "products": FieldValue.arrayUnion([
+                      {
+                        "category": categoryEntered.text,
+                        "brand": nameEntered.text,
+                        "desc": descriptionEntered.text,
+                        "discount": offersEntered.text,
+                        "name": nameEntered.text,
+                        "oprice": priceEntered.text,
+                        "isveg": true,
+                        "life": "5 years",
+                        "lat": 28.0,
+                        "long": 72.0,
+                        "mprice": priceEntered.text,
+                        "id": id,
+                        "freq": freq,
+                        "manufacturer": "Manufacturer",
+                        "marketedBy": "Manufacturer",
+                      }
+                    ]),
+                  });
+                  setState(() {
+                    showSpinner = false;
+                  });
+                },
+                child: showSpinner == false
+                    ? Container(
+                        decoration: BoxDecoration(
+                            color: Colors.blue,
+                            borderRadius: BorderRadius.circular(1000)),
+                        height: height / 15,
+                        width: width / 1.8,
+                        child: Center(
+                            child: Text('Login',
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: height / 65))))
+                    : CircularProgressIndicator(),
+              )
             ],
           ),
         ),
