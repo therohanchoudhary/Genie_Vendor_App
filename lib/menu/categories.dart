@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:vendor_app/menu/TabBarMenu.dart';
 import 'package:vendor_app/menu/add_product.dart';
@@ -11,25 +13,60 @@ class CategoryScreen extends StatefulWidget {
   _CategoryScreenState createState() => _CategoryScreenState();
 }
 
+class CategoriesContent {
+  final String category;
+  final String image;
+
+  CategoriesContent({this.category, this.image});
+}
+
 class _CategoryScreenState extends State<CategoryScreen> {
+  List<CategoriesContent> categoryList = [];
+
+  Future _getData(String email) async {
+    var _db =
+        await FirebaseFirestore.instance.collection("shop").doc('2').get();
+    for (int i = 0; i < _db.data()["products"].length; i++) {
+      var x = _db.data()["products"][i];
+
+      if (x == null) {
+        print(categoryList);
+        return;
+      } else {
+        categoryList.add(
+            CategoriesContent(image: x["img"][0], category: x["category"]));
+      }
+      if (mounted) {
+        setState(() {
+          // Add these lines to your code
+        });
+      }
+    }
+  }
+
+  @override
+  void initState() {
+    User user = FirebaseAuth.instance.currentUser;
+    _getData(user.email);
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
-    List<String> categoryList = [
-      'Fruits &\nVegetables',
-      'Non\nVegetarian',
-      'Soft\nDrinks',
-      'Cosmetics\n(Men)',
-      'Spice &\nHerbs',
-      'Cleaning &\nHousehold',
-      'Electronics',
-    ];
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
 
+    print(categoryList);
     _gridCardWidget(int index) {
       return GestureDetector(
-        onTap: () => Navigator.push(context,
-            MaterialPageRoute(builder: (BuildContext context) => TabBarMenu())),
+        onTap: () {
+          print(categoryList[index].category);
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (BuildContext context) =>
+                      TabBarMenu(category: categoryList[index].category)));
+        },
         child: Container(
             height: height / 4.7,
             width: width / 2.3,
@@ -46,11 +83,10 @@ class _CategoryScreenState extends State<CategoryScreen> {
                           borderRadius: BorderRadius.circular(20),
                           image: DecorationImage(
                               fit: BoxFit.cover,
-                              image: NetworkImage(
-                                  'https://st.depositphotos.com/1063437/2769/i/950/depositphotos_27699157-stock-photo-green-shopping-bag-with-grocery.jpg')))),
+                              image: NetworkImage(categoryList[index].image)))),
                 ),
                 SizedBox(height: height / 150),
-                Text(categoryList[index],
+                Text(categoryList[index].category,
                     textAlign: TextAlign.center,
                     style:
                         TextStyle(color: Colors.black, fontSize: height / 70)),
@@ -70,27 +106,32 @@ class _CategoryScreenState extends State<CategoryScreen> {
                         color: Colors.grey[500],
                         fontSize: 15,
                         fontWeight: FontWeight.bold))),
-            ListView.builder(
-              scrollDirection: Axis.vertical,
-              shrinkWrap: true,
-              physics: NeverScrollableScrollPhysics(),
-              itemCount: categoryList.length ~/ 2,
-              itemBuilder: (BuildContext context, int index) {
-                return Column(
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        _gridCardWidget(index * 2),
-                        SizedBox(width: width / 30),
-                        _gridCardWidget(index * 2 + 1),
-                      ],
-                    ),
-                    SizedBox(height: 20),
-                  ],
-                );
-              },
-            ),
+            categoryList.length != 0
+                ? ListView.builder(
+                    scrollDirection: Axis.vertical,
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    itemCount: categoryList.length ~/ 2,
+                    itemBuilder: (BuildContext context, int index) {
+                      return Column(
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              _gridCardWidget(index * 2),
+                              SizedBox(width: width / 30),
+                              _gridCardWidget(index * 2 + 1),
+                            ],
+                          ),
+                          SizedBox(height: 20),
+                        ],
+                      );
+                    },
+                  )
+                : Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: CircularProgressIndicator(),
+                  ),
             categoryList.length % 2 == 1
                 ? _gridCardWidget(categoryList.length - 1)
                 : Container(),

@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:vendor_app/registration_and_login/login.dart';
@@ -8,8 +9,31 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
+  String userName;
+
+  Future getUserName(String email) async {
+    setState(() async {
+      await FirebaseFirestore.instance
+          .collection('registerSeller')
+          .doc(email)
+          .get()
+          .then((value) => userName = value.data()["name"]);
+      print(userName);
+    });
+
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    User user = FirebaseAuth.instance.currentUser;
+    getUserName(user.email);
+  }
+
   @override
   Widget build(BuildContext context) {
+    User user = FirebaseAuth.instance.currentUser;
+
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
 
@@ -66,15 +90,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text('John Doe',
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: width / 14,
-                                  fontWeight: FontWeight.bold)),
+                          userName != null
+                              ? Text(userName,
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: width / 20,
+                                      fontWeight: FontWeight.bold))
+                              : Text("Loading name...",
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: width / 25,
+                                      fontWeight: FontWeight.bold)),
                           SizedBox(height: height / 150),
-                          Text('email@gmail.com',
+                          Text(user.email,
                               style: TextStyle(
-                                  color: Colors.white, fontSize: width / 35)),
+                                  color: Colors.white, fontSize: width / 55)),
                           SizedBox(height: height / 60),
                           Container(
                             decoration: BoxDecoration(

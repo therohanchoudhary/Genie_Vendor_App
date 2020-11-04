@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:vendor_app/menu/product_list.dart';
 
 class TabBarMenu extends StatefulWidget {
+  final String category;
+
+  TabBarMenu({this.category});
+
   @override
   _TabBarMenuState createState() => _TabBarMenuState();
 }
@@ -41,8 +45,10 @@ class _TabBarMenuState extends State<TabBarMenu> {
             Expanded(
               child: TabBarView(
                 children: [
-                  ProductListScreen(outOfStock: false),
-                  ProductListScreen(outOfStock: true)
+                  ProductListScreen(
+                      outOfStock: false, category: widget.category),
+                  ProductListScreen(
+                      outOfStock: true, category: widget.category),
                 ],
               ),
             ),

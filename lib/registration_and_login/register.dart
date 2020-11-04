@@ -85,8 +85,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                         _showProgressIndicator = true;
                       });
 
-                      UserCredential userCredential = await FirebaseAuth
-                          .instance
+                      await FirebaseAuth.instance
                           .createUserWithEmailAndPassword(
                               email: emailEntered.text,
                               password: passwordEntered.text);

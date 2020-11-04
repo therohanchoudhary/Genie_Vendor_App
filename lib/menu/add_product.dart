@@ -2,8 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:vendor_app/bottom_navigation_bar.dart';
-import 'package:vendor_app/menu/categories.dart';
-
 import 'add_product_image.dart';
 
 class AddProduct extends StatefulWidget {
@@ -125,7 +123,7 @@ class _AddProductState extends State<AddProduct> {
                   });
 
                   int x;
-                  String id;
+                  var id;
                   await FirebaseFirestore.instance
                       .collection("registerSeller")
                       .doc(widget.emailSeller)
@@ -156,6 +154,7 @@ class _AddProductState extends State<AddProduct> {
                       widget.url2 != null &&
                       widget.url3 != null &&
                       widget.url4 != null) {
+                    int mPriceEntered = int.parse(priceEntered.text);
                     await FirebaseFirestore.instance
                         .collection('shop')
                         .doc('2')
@@ -165,15 +164,15 @@ class _AddProductState extends State<AddProduct> {
                           "category": categoryEntered.text,
                           "brand": nameEntered.text,
                           "desc": descriptionEntered.text,
-                          "discount": offersEntered.text,
+                          "discount": offersEntered.text + "%",
                           "name": nameEntered.text,
-                          "oprice": priceEntered.text,
+                          "oprice": mPriceEntered,
                           "isveg": true,
                           "life": "5 years",
                           "lat": 28.0,
                           "long": 72.0,
-                          "mprice": priceEntered.text,
-                          "id": id,
+                          "mprice": mPriceEntered,
+                          "id": id.toString(),
                           "freq": freq,
                           "manufacturer": "Manufacturer",
                           "marketedBy": "Manufacturer",
@@ -186,6 +185,7 @@ class _AddProductState extends State<AddProduct> {
                         }
                       ]),
                     });
+
                     Fluttertoast.showToast(
                         msg: "Product has been added successfully.",
                         toastLength: Toast.LENGTH_SHORT,
@@ -201,7 +201,7 @@ class _AddProductState extends State<AddProduct> {
                                 BottomNavigationBarScreen()));
                   } else {
                     Fluttertoast.showToast(
-                        msg: "Insufficient details & or photos.",
+                        msg: "Insufficient details &/or photos.",
                         toastLength: Toast.LENGTH_SHORT,
                         gravity: ToastGravity.CENTER,
                         timeInSecForIosWeb: 1,

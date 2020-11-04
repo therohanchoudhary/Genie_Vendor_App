@@ -52,7 +52,7 @@ class _TabBarOrderState extends State<TabBarOrder> {
               child: TabBarView(
                 children: [
                   OrderScreen(orderStatus: 'Placed'),
-                  OrderScreen(orderStatus: 'Packing'),
+                  OrderScreen(orderStatus: 'Waiting..'),
                   OrderScreen(orderStatus: 'Ready'),
                   OrderScreen(orderStatus: 'Shipping'),
                 ],
