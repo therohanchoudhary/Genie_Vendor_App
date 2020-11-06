@@ -31,8 +31,60 @@ class ProductList {
       this.image});
 }
 
+class ProductFirebase {
+  final String brand;
+  final String category;
+  final String desc;
+  final String discount;
+  final List freq;
+  final String id;
+  final List<String> img;
+  final bool isveg;
+  final double lat;
+  final String life;
+  final double long;
+  final String manufacturer;
+  final String marketedby;
+  final int mprice;
+  final String oprice;
+  final List reviews;
+  final String rnr;
+  final String seller;
+  final String sellerid;
+  final String units;
+  final List values;
+  bool outOfStock;
+
+  ProductFirebase({
+    this.id,
+    this.category,
+    this.freq,
+    this.values,
+    this.brand,
+    this.desc,
+    this.discount,
+    this.img,
+    this.isveg,
+    this.lat,
+    this.life,
+    this.long,
+    this.manufacturer,
+    this.marketedby,
+    this.mprice,
+    this.oprice,
+    this.outOfStock,
+    this.reviews,
+    this.rnr,
+    this.seller,
+    this.sellerid,
+    this.units,
+  });
+}
+
 class _ProductListScreenState extends State<ProductListScreen> {
   List<ProductList> productList = [];
+  List<ProductFirebase> productsFirebase = [];
+  bool noProducts = false;
 
   Future _getData(String email) async {
     var _db =
@@ -43,10 +95,8 @@ class _ProductListScreenState extends State<ProductListScreen> {
         .doc(email)
         .get()
         .then((value) => id = value.data()["id"]);
-    print(id);
 
     for (int i = 0; i < _db.data()["products"].length; i++) {
-      if (_db.data()["products"][i] == null) break;
       if (_db.data()["products"][i]["id"].toString() == id.toString() &&
           _db.data()["products"][i]["category"].toString() == widget.category) {
         productList.add(
@@ -62,8 +112,37 @@ class _ProductListScreenState extends State<ProductListScreen> {
               outOfStock: _db.data()["products"][i]["outOfStock"] == true,
               image: _db.data()["products"][i]["img"][0]),
         );
+        productsFirebase.add(ProductFirebase(
+          id: _db.data()["products"][i]["id"],
+          isveg: _db.data()["products"][i]["isveg"],
+          category: _db.data()["products"][i]["category"],
+          rnr: _db.data()["products"][i]["rnr"],
+          brand: _db.data()["products"][i]["brand"],
+          lat: _db.data()["products"][i]["lat"],
+          values: _db.data()["products"][i]["values"],
+          reviews: _db.data()["products"][i]["reviews"],
+          outOfStock: _db.data()["products"][i]["outOfStock"] == true,
+          marketedby: _db.data()["products"][i]["marketedby"],
+          manufacturer: _db.data()["products"][i]["manufacturer"],
+          discount: _db.data()["products"][i]["discount"],
+          units: _db.data()["products"][i]["units"],
+          seller: _db.data()["products"][i]["seller"],
+          sellerid: _db.data()["products"][i]["sellerid"],
+          desc: _db.data()["products"][i]["desc"],
+          img: _db.data()["products"][i]["img"],
+          life: _db.data()["products"][i]["life"],
+          oprice: _db.data()["products"][i]["oprice"],
+          long: _db.data()["products"][i]["long"],
+          mprice: _db.data()["products"][i]["mprice"],
+          freq: _db.data()["products"][i]["freq"],
+        ));
+
         setState(() {});
+        print("Length ${productsFirebase.length}");
       }
+      setState(() {
+        noProducts = true;
+      });
     }
   }
 
@@ -80,7 +159,6 @@ class _ProductListScreenState extends State<ProductListScreen> {
     var width = MediaQuery.of(context).size.width;
 
     setState(() {});
-    print("Product list is $productList");
     return Scaffold(
       body: Center(
         child: Column(
@@ -144,11 +222,18 @@ class _ProductListScreenState extends State<ProductListScreen> {
                                   ),
                                   SizedBox(width: width / 9),
                                   Switch(
-                                    value: !productList[index].outOfStock,
-                                    onChanged: (value) {
+                                    value: productList[index].outOfStock,
+                                    onChanged: (value) async {
                                       setState(() {
-                                        productList[index].outOfStock = !value;
+                                        print(value);
+                                        productsFirebase[index].outOfStock =
+                                            true;
                                       });
+                                      await FirebaseFirestore.instance
+                                          .collection('shop')
+                                          .doc('2')
+                                          .update(
+                                              {"products": productsFirebase});
                                     },
                                     activeColor: Colors.white,
                                     activeTrackColor: Colors.blue,
@@ -162,12 +247,20 @@ class _ProductListScreenState extends State<ProductListScreen> {
                       },
                     ),
                   )
-                : Column(
-                    children: [
-                      SizedBox(height: 20),
-                      Center(child: CircularProgressIndicator()),
-                    ],
-                  ),
+                : noProducts == false
+                    ? Column(
+                        children: [
+                          SizedBox(height: 20),
+                          Center(child: CircularProgressIndicator()),
+                        ],
+                      )
+                    : Center(
+                        child: widget.outOfStock == true
+                            ? Text('No Products are out of stock.',
+                                textAlign: TextAlign.center)
+                            : Text('No Products registered by you.',
+                                textAlign: TextAlign.center),
+                      ),
           ],
         ),
       ),

@@ -72,8 +72,9 @@ class _AddProductState extends State<AddProduct> {
                   Container(
                     height: height / 5,
                     width: width / 2,
-                    child: Image.network(
-                        'https://www.ocado.com/productImages/316/316751011_0_640x640.jpg?identifier=f5b98bc6a016e720dee27da65ec354ca'),
+                    child: Image.network(widget.url1 == null
+                        ? 'https://www.ocado.com/productImages/316/316751011_0_640x640.jpg?identifier=f5b98bc6a016e720dee27da65ec354ca'
+                        : widget.url1),
                   ),
                   Flexible(child: SizedBox(width: 1000)),
                   InkWell(
@@ -114,7 +115,8 @@ class _AddProductState extends State<AddProduct> {
               _textField('Product Name', TextInputType.name, nameEntered),
               _textField('Price', TextInputType.number, priceEntered),
               _textField('Description', TextInputType.name, descriptionEntered),
-              _textField('Offers', TextInputType.name, offersEntered),
+              _textField(
+                  'Offers (Discount%)', TextInputType.number, offersEntered),
               SizedBox(height: height / 40),
               GestureDetector(
                 onTap: () async {
@@ -124,6 +126,7 @@ class _AddProductState extends State<AddProduct> {
 
                   int x;
                   var id;
+                  String sellerName;
                   await FirebaseFirestore.instance
                       .collection("registerSeller")
                       .doc(widget.emailSeller)
@@ -131,6 +134,10 @@ class _AddProductState extends State<AddProduct> {
                       .then((value) {
                     x = value.data()["productsUploaded"];
                     id = value.data()["id"];
+                    sellerName = value
+                        .data()["productsUploaded"]
+                        .toString()
+                        .toUpperCase();
                   });
                   x++;
                   await FirebaseFirestore.instance
@@ -155,6 +162,7 @@ class _AddProductState extends State<AddProduct> {
                       widget.url3 != null &&
                       widget.url4 != null) {
                     int mPriceEntered = int.parse(priceEntered.text);
+                    List reviews = [];
                     await FirebaseFirestore.instance
                         .collection('shop')
                         .doc('2')
@@ -164,7 +172,7 @@ class _AddProductState extends State<AddProduct> {
                           "category": categoryEntered.text,
                           "brand": nameEntered.text,
                           "desc": descriptionEntered.text,
-                          "discount": offersEntered.text + "%",
+                          "discount": offersEntered.text,
                           "name": nameEntered.text,
                           "oprice": mPriceEntered,
                           "isveg": true,
@@ -172,16 +180,22 @@ class _AddProductState extends State<AddProduct> {
                           "lat": 28.0,
                           "long": 72.0,
                           "mprice": mPriceEntered,
-                          "id": id.toString(),
+                          "id": "${id}_$x",
+                          "sellerid": "$id",
+                          "seller": sellerName,
+                          "rnr": "Refund Policy",
                           "freq": freq,
                           "manufacturer": "Manufacturer",
-                          "marketedBy": "Manufacturer",
+                          "marketedby": "Marketer",
                           "img": [
                             widget.url1,
                             widget.url2,
                             widget.url3,
                             widget.url4
                           ],
+                          "units": "box",
+                          "reviews": reviews,
+                          "values": [1, 2],
                         }
                       ]),
                     });

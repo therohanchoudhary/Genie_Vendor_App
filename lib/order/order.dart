@@ -54,7 +54,7 @@ class _OrderScreenState extends State<OrderScreen> {
       var a = querySnapshot.docs[i];
       print(a.data());
       for (int j = 0; j < a.data()["products"].length; j++) {
-        if (a.data()["products"][j]["id"].toString() == id.toString()) {
+        if (a.data()["products"][j]["sellerid"].toString() == "$id") {
           orderList.add(OrderList(
               orderNumber: a.data()["products"][j]["orderid"],
               price: a.data()["products"][j]["oprice"],
@@ -245,7 +245,7 @@ class _OrderScreenState extends State<OrderScreen> {
               )
             : Center(
                 child: noEntries
-                    ? Text('No products registered by you.',
+                    ? Text('No pending orders.',
                         textAlign: TextAlign.center)
                     : CircularProgressIndicator()),
       ),

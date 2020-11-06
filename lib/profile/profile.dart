@@ -1,6 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:vendor_app/bottom_navigation_bar.dart';
+import 'package:vendor_app/profile/edit_profile_string_values.dart';
+import 'package:vendor_app/profile/edit_signature.dart';
 import 'package:vendor_app/registration_and_login/login.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -17,10 +20,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
           .collection('registerSeller')
           .doc(email)
           .get()
-          .then((value) => userName = value.data()["name"]);
+          .then((value) =>
+              userName = value.data()["ownerName"].toString().toUpperCase());
+      setState(() {});
       print(userName);
     });
-
   }
 
   @override
@@ -37,28 +41,47 @@ class _ProfileScreenState extends State<ProfileScreen> {
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
 
-    _widget(String text) {
+    _widget(String text, var whereToGo) {
       return Padding(
         padding: EdgeInsets.symmetric(horizontal: width / 15),
-        child: Column(
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(text,
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold, fontSize: height / 70)),
-                Icon(
-                  Icons.arrow_forward_ios,
-                  size: height / 60,
-                )
-              ],
-            ),
-            SizedBox(height: height / 50),
-            Container(
-                height: 0.3, width: double.infinity, color: Colors.blue[300]),
-            SizedBox(height: height / 50),
-          ],
+        child: GestureDetector(
+          onTap: () {
+            print(whereToGo);
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (BuildContext context) => whereToGo));
+          },
+          child: Column(
+            children: [
+              GestureDetector(
+                onTap: () {
+                  print(whereToGo);
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (BuildContext context) => whereToGo));
+                },
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(text,
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: height / 70)),
+                    Icon(
+                      Icons.arrow_forward_ios,
+                      size: height / 60,
+                    )
+                  ],
+                ),
+              ),
+              SizedBox(height: height / 50),
+              Container(
+                  height: 0.3, width: double.infinity, color: Colors.blue[300]),
+              SizedBox(height: height / 50),
+            ],
+          ),
         ),
       );
     }
@@ -68,11 +91,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
         body: SingleChildScrollView(
           child: Column(
             children: [
-              Container(
-                height: height / 4,
-                width: width,
-                color: Colors.blue[300],
-                child: Center(
+              ClipPath(
+                clipper: BottomWaveClipper(),
+                child: Container(
+                  height: height / 3.7,
+                  width: width,
+                  color: Colors.blue[300],
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -94,7 +118,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               ? Text(userName,
                                   style: TextStyle(
                                       color: Colors.white,
-                                      fontSize: width / 20,
+                                      fontSize: width / 25,
                                       fontWeight: FontWeight.bold))
                               : Text("Loading name...",
                                   style: TextStyle(
@@ -128,15 +152,34 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
               ),
               SizedBox(height: height / 30),
-              _widget('Shop Name'),
-              _widget('Owner Name'),
-              _widget('Mobile Number'),
-              _widget('Email ID'),
-              _widget('List of Products'),
-              _widget('Bank Details'),
-              _widget('Business Details'),
-              _widget('Signature'),
-              _widget('Address'),
+              _widget(
+                  'Shop Name',
+                  EditProfileStrings(
+                      attribute: 'shopName',
+                      hintText: 'Edit your shop name',
+                      keyboardType: TextInputType.name)),
+              _widget(
+                  'Owner Name',
+                  EditProfileStrings(
+                      attribute: 'ownerName',
+                      hintText: 'Edit your name',
+                      keyboardType: TextInputType.name)),
+              _widget(
+                  'Mobile Number',
+                  EditProfileStrings(
+                      attribute: 'mobileNumber',
+                      hintText: "Enter new Mobile Number",
+                      keyboardType: TextInputType.number)),
+              _widget('List of Products', BottomNavigationBarScreen()),
+              _widget('Bank Details', ProfileScreen()),
+              _widget('Business Details', ProfileScreen()),
+              _widget('Signature', EditSignature()),
+              _widget(
+                  'Address',
+                  EditProfileStrings(
+                      attribute: 'address',
+                      hintText: "Enter new address",
+                      keyboardType: TextInputType.streetAddress)),
               GestureDetector(
                   onTap: () async {
                     await FirebaseAuth.instance.signOut();
@@ -159,15 +202,30 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 }
 
-class MyCustomClipper extends CustomClipper<Path> {
+class BottomWaveClipper extends CustomClipper<Path> {
   @override
   Path getClip(Size size) {
-    Path path = Path();
+    var path = Path();
+    path.lineTo(0.0, size.height - 20);
+
+    var firstControlPoint = Offset(size.width / 4, size.height);
+    var firstEndPoint = Offset(size.width / 2.25, size.height - 30.0);
+    path.quadraticBezierTo(firstControlPoint.dx, firstControlPoint.dy,
+        firstEndPoint.dx, firstEndPoint.dy);
+
+    var secondControlPoint =
+        Offset(size.width - (size.width / 3.25), size.height - 65);
+    var secondEndPoint = Offset(size.width, size.height - 40);
+    path.quadraticBezierTo(secondControlPoint.dx, secondControlPoint.dy,
+        secondEndPoint.dx, secondEndPoint.dy);
+
+    path.lineTo(size.width, size.height - 40);
+    path.lineTo(size.width, 0.0);
+    path.close();
+
     return path;
   }
 
   @override
-  bool shouldReclip(covariant CustomClipper<Path> oldClipper) {
-    return false;
-  }
+  bool shouldReclip(CustomClipper<Path> oldClipper) => false;
 }

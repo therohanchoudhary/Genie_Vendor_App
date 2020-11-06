@@ -16,7 +16,7 @@ class _TabBarOrderState extends State<TabBarOrder> {
       child: Scaffold(
         body: Column(
           children: [
-            SizedBox(height: height/20),
+            SizedBox(height: height / 20),
             Center(
                 child: Text('Welcome User',
                     style: TextStyle(
@@ -24,30 +24,28 @@ class _TabBarOrderState extends State<TabBarOrder> {
                         fontSize: 15,
                         fontWeight: FontWeight.bold))),
             SizedBox(height: height / 60),
-
             TabBar(
               tabs: [
                 Tab(
-                    child: Text('Placed(60)',
+                    child: Text('Placed',
                         style: TextStyle(
                             color: Colors.black, fontSize: width / 50))),
                 Tab(
-                    child: Text('Packing(10)',
+                    child: Text('Packing',
                         style: TextStyle(
                             color: Colors.black, fontSize: width / 50))),
                 Tab(
-                    child: Text('Ready(20)',
+                    child: Text('Ready',
                         style: TextStyle(
                             color: Colors.black, fontSize: width / 50))),
                 Tab(
-                    child: Text('Shipping(20)',
+                    child: Text('Shipping',
                         style: TextStyle(
                             color: Colors.black, fontSize: width / 53))),
               ],
             ),
             Container(
                 color: Colors.grey[600], width: double.infinity, height: 2),
-
             Expanded(
               child: TabBarView(
                 children: [
@@ -60,7 +58,6 @@ class _TabBarOrderState extends State<TabBarOrder> {
             ),
           ],
         ),
-
       ),
     );
   }

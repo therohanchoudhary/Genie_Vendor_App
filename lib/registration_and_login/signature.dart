@@ -24,14 +24,14 @@ class _SignatureScreen extends State<SignatureScreen> {
 
   TextEditingController accountNumber = TextEditingController();
 
-  Future getImage() async {
+  Future _getImage() async {
     var image = await ImagePicker.pickImage(source: ImageSource.gallery);
     setState(() {
       _signatureImage = image;
     });
   }
 
-  Future uploadImage() async {
+  Future _uploadImage() async {
     String fileName = 'seller/signature/${widget.userEmail}';
     StorageReference firebaseStorage =
         FirebaseStorage.instance.ref().child(fileName);
@@ -114,7 +114,7 @@ class _SignatureScreen extends State<SignatureScreen> {
                         padding: EdgeInsets.symmetric(horizontal: 20),
                         child: GestureDetector(
                           onTap: () {
-                            getImage();
+                            _getImage();
                           },
                           child: Container(
                             height: 200,
@@ -139,7 +139,7 @@ class _SignatureScreen extends State<SignatureScreen> {
                 GestureDetector(
                   onTap: () async {
                     if (_signatureImage != null) {
-                      uploadImage();
+                      _uploadImage();
                       Navigator.push(
                           context,
                           MaterialPageRoute(
