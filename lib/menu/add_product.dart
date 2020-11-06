@@ -1,12 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:vendor_app/bottom_navigation_bar.dart';
+import 'package:vendor_app/useful_methods.dart';
 import 'add_product_image.dart';
 
 class AddProduct extends StatefulWidget {
   final String emailSeller;
-
   final String url1, url2, url3, url4;
 
   AddProduct({this.emailSeller, this.url1, this.url2, this.url3, this.url4});
@@ -72,9 +71,13 @@ class _AddProductState extends State<AddProduct> {
                   Container(
                     height: height / 5,
                     width: width / 2,
-                    child: Image.network(widget.url1 == null
-                        ? 'https://www.ocado.com/productImages/316/316751011_0_640x640.jpg?identifier=f5b98bc6a016e720dee27da65ec354ca'
-                        : widget.url1),
+                    child: widget.url1 == null
+                        ? Center(
+                            child: Text('Add images first.\nClick + button.',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    color: Colors.blue, fontSize: 12)))
+                        : Image.network(widget.url1),
                   ),
                   Flexible(child: SizedBox(width: 1000)),
                   InkWell(
@@ -185,6 +188,7 @@ class _AddProductState extends State<AddProduct> {
                           "seller": sellerName,
                           "rnr": "Refund Policy",
                           "freq": freq,
+                          "outOfStock": false,
                           "manufacturer": "Manufacturer",
                           "marketedby": "Marketer",
                           "img": [
@@ -199,29 +203,16 @@ class _AddProductState extends State<AddProduct> {
                         }
                       ]),
                     });
-
-                    Fluttertoast.showToast(
-                        msg: "Product has been added successfully.",
-                        toastLength: Toast.LENGTH_SHORT,
-                        gravity: ToastGravity.CENTER,
-                        timeInSecForIosWeb: 1,
-                        backgroundColor: Colors.grey,
-                        textColor: Colors.white,
-                        fontSize: 12.0);
+                    UsefulMethods()
+                        .showToast("Product has been added successfully.");
                     Navigator.push(
                         context,
                         MaterialPageRoute(
                             builder: (BuildContext context) =>
                                 BottomNavigationBarScreen()));
                   } else {
-                    Fluttertoast.showToast(
-                        msg: "Insufficient details &/or photos.",
-                        toastLength: Toast.LENGTH_SHORT,
-                        gravity: ToastGravity.CENTER,
-                        timeInSecForIosWeb: 1,
-                        backgroundColor: Colors.grey,
-                        textColor: Colors.white,
-                        fontSize: 12.0);
+                    UsefulMethods()
+                        .showToast("Insufficient details &/or photos.");
                   }
                   setState(() {
                     showSpinner = false;

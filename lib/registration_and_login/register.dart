@@ -1,9 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:vendor_app/registration_and_login/login.dart';
 import 'package:vendor_app/registration_and_login/register_business_details.dart';
+import 'package:vendor_app/useful_methods.dart';
 
 class RegistrationScreen extends StatefulWidget {
   @override
@@ -21,7 +21,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
         height: height,
         child: TextField(
           obscureText: hintText == 'Password',
-          maxLines: maxLines,
+          maxLines: hintText == 'Address' ? 4 : maxLines,
           controller: controller,
           keyboardType: keyboardType,
           decoration: InputDecoration(
@@ -115,16 +115,9 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                                       userEmail: emailEntered.text,
                                       fromProfile: false)));
                     } catch (e) {
-                      print("Error Error Error Error $e");
-
-                      Fluttertoast.showToast(
-                          msg: "Please enter correct credentials",
-                          toastLength: Toast.LENGTH_SHORT,
-                          gravity: ToastGravity.CENTER,
-                          timeInSecForIosWeb: 1,
-                          backgroundColor: Colors.grey,
-                          textColor: Colors.white,
-                          fontSize: 12.0);
+                      print(e);
+                      UsefulMethods()
+                          .showToast("Please enter correct credentials");
                       emailEntered.text = "";
                       passwordEntered.text = "";
                       mobileNumberEntered.text = "";
