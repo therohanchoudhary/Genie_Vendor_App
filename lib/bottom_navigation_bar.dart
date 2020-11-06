@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:vendor_app/order/TabBarOrder.dart';
+import 'package:vendor_app/order/tab_bar_order.dart';
 import 'package:vendor_app/menu/categories.dart';
 import 'package:vendor_app/pay_in/pay_in.dart';
 import 'package:vendor_app/profile/profile.dart';

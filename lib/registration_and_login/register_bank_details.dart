@@ -1,11 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:vendor_app/bottom_navigation_bar.dart';
 import 'package:vendor_app/registration_and_login/signature.dart';
+import 'package:vendor_app/useful_methods.dart';
 
 class BankDetails extends StatefulWidget {
   final String userEmail;
+  final bool fromProfile;
 
-  BankDetails({this.userEmail});
+  BankDetails({this.userEmail, this.fromProfile});
 
   @override
   _BankDetails createState() => _BankDetails();
@@ -138,22 +141,45 @@ class _BankDetails extends State<BankDetails> {
                     setState(() {
                       showProgressIndicator = true;
                     });
-                    await FirebaseFirestore.instance
-                        .collection('registerSeller')
-                        .doc(widget.userEmail)
-                        .update({
-                      'bankDetail': _choice,
-                      'bankAccountName': accountName.text,
-                      'bankAccountNumber': accountNumber.text,
-                    });
+                    if (accountName.text != "" &&
+                        accountName.text != null &&
+                        accountNumber.text != "" &&
+                        accountNumber.text != "") {
+                      await FirebaseFirestore.instance
+                          .collection('registerSeller')
+                          .doc(widget.userEmail)
+                          .update({
+                        'bankDetail': _choice,
+                        'bankAccountName': accountName.text,
+                        'bankAccountNumber': accountNumber.text,
+                      });
+                      if (widget.fromProfile == true) {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (BuildContext context) =>
+                                    BottomNavigationBarScreen()));
+                        UsefulMethods()
+                            .showToast("Bank details changed successfully.");
+                      } else {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (BuildContext context) =>
+                                    SignatureScreen(
+                                        userEmail: widget.userEmail)));
+                      }
+                    } else {
+                      UsefulMethods().showToast("Incorrect Credentials");
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (BuildContext context) =>
+                                  BottomNavigationBarScreen()));
+                    }
                     setState(() {
                       showProgressIndicator = false;
                     });
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (BuildContext context) =>
-                                SignatureScreen(userEmail: widget.userEmail)));
                   },
                   child: showProgressIndicator == false
                       ? Container(

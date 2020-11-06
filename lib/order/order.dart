@@ -245,8 +245,7 @@ class _OrderScreenState extends State<OrderScreen> {
               )
             : Center(
                 child: noEntries
-                    ? Text('No pending orders.',
-                        textAlign: TextAlign.center)
+                    ? Text('No pending orders.', textAlign: TextAlign.center)
                     : CircularProgressIndicator()),
       ),
     ));

@@ -1,11 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:vendor_app/bottom_navigation_bar.dart';
 import 'package:vendor_app/registration_and_login/register_bank_details.dart';
+import 'package:vendor_app/useful_methods.dart';
 
 class BusinessDetails extends StatefulWidget {
   final String userEmail;
+  final bool fromProfile;
 
-  BusinessDetails({this.userEmail});
+  BusinessDetails({this.userEmail, this.fromProfile});
 
   @override
   _BusinessDetailsState createState() => _BusinessDetailsState();
@@ -123,20 +126,40 @@ class _BusinessDetailsState extends State<BusinessDetails> {
                 GestureDetector(
                   onTap: () async {
                     _showProgressIndicator = true;
-                    await FirebaseFirestore.instance
-                        .collection('registerSeller')
-                        .doc(widget.userEmail)
-                        .update({
-                      'businessDetail': _choice,
-                      'ggstinNumber': ggstinNumber.text,
-                    });
-                    _showProgressIndicator = false;
 
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (BuildContext context) =>
-                                BankDetails(userEmail: widget.userEmail)));
+                    if (ggstinNumber.text != null && ggstinNumber.text != "") {
+                      await FirebaseFirestore.instance
+                          .collection('registerSeller')
+                          .doc(widget.userEmail)
+                          .update({
+                        'businessDetail': _choice,
+                        'ggstinNumber': ggstinNumber.text,
+                      });
+                      if (widget.fromProfile == true) {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (BuildContext context) =>
+                                    BottomNavigationBarScreen()));
+                        UsefulMethods().showToast(
+                            "Business details are changed successfully.");
+                      } else {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (BuildContext context) => BankDetails(
+                                    userEmail: widget.userEmail,
+                                    fromProfile: false)));
+                      }
+                    } else {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (BuildContext context) =>
+                                  BottomNavigationBarScreen()));
+                      UsefulMethods().showToast("Incorrect credentials.");
+                    }
+                    _showProgressIndicator = false;
                   },
                   child: _showProgressIndicator == false
                       ? Container(

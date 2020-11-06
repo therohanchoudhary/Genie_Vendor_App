@@ -5,7 +5,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:vendor_app/bottom_navigation_bar.dart';
 import 'package:vendor_app/registration_and_login/register.dart';
 
-import '../not_registered_user_screen.dart';
+import 'not_registered_user_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   @override

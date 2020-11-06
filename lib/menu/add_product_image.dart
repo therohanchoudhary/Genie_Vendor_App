@@ -71,10 +71,11 @@ class _ProductAddImageState extends State<ProductAddImage> {
                                 size: height / 20,
                               )),
                           onTap: () async {
-                            var image = await ImagePicker.pickImage(
-                                source: ImageSource.gallery);
+                            var image = await ImagePicker()
+                                .getImage(source: ImageSource.gallery);
+
                             setState(() {
-                              image1 = image;
+                              image1 = File(image.path);
                             });
                             uploadImage(1, image1);
                           },
@@ -99,10 +100,11 @@ class _ProductAddImageState extends State<ProductAddImage> {
                                 size: height / 20,
                               )),
                           onTap: () async {
-                            var image = await ImagePicker.pickImage(
-                                source: ImageSource.gallery);
+                            var image = await ImagePicker()
+                                .getImage(source: ImageSource.gallery);
+
                             setState(() {
-                              image2 = image;
+                              image2 = File(image.path);
                             });
                             uploadImage(2, image2);
                           },
@@ -132,10 +134,11 @@ class _ProductAddImageState extends State<ProductAddImage> {
                                 size: height / 20,
                               )),
                           onTap: () async {
-                            var image = await ImagePicker.pickImage(
-                                source: ImageSource.gallery);
+                            var image = await ImagePicker()
+                                .getImage(source: ImageSource.gallery);
+
                             setState(() {
-                              image3 = image;
+                              image3 = File(image.path);
                             });
                             uploadImage(3, image3);
                           },
@@ -160,10 +163,11 @@ class _ProductAddImageState extends State<ProductAddImage> {
                                 size: height / 20,
                               )),
                           onTap: () async {
-                            var image = await ImagePicker.pickImage(
-                                source: ImageSource.gallery);
+                            var image = await ImagePicker()
+                                .getImage(source: ImageSource.gallery);
+
                             setState(() {
-                              image4 = image;
+                              image4 = File(image.path);
                             });
                             uploadImage(4, image4);
                           },
@@ -231,7 +235,7 @@ class _ProductAddImageState extends State<ProductAddImage> {
                                 fontSize: 12.0);
                         }
                         setState(() {
-                          showSpinner=false;
+                          showSpinner = false;
                         });
                       },
                       child: Container(

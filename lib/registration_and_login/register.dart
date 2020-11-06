@@ -112,7 +112,8 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                           MaterialPageRoute(
                               builder: (BuildContext context) =>
                                   BusinessDetails(
-                                      userEmail: emailEntered.text)));
+                                      userEmail: emailEntered.text,
+                                      fromProfile: false)));
                     } catch (e) {
                       print("Error Error Error Error $e");
 

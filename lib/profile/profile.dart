@@ -1,10 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:vendor_app/bottom_navigation_bar.dart';
+import 'package:vendor_app/profile/edit_profile_picture.dart';
 import 'package:vendor_app/profile/edit_profile_string_values.dart';
 import 'package:vendor_app/profile/edit_signature.dart';
 import 'package:vendor_app/registration_and_login/login.dart';
+import 'package:vendor_app/registration_and_login/register_bank_details.dart';
+import 'package:vendor_app/registration_and_login/register_business_details.dart';
 
 class ProfileScreen extends StatefulWidget {
   @override
@@ -13,6 +17,9 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   String userName;
+  var profilePicURL = "ii";
+  bool noProfilePic = false;
+  bool showSpinner = false;
 
   Future getUserName(String email) async {
     setState(() async {
@@ -27,11 +34,33 @@ class _ProfileScreenState extends State<ProfileScreen> {
     });
   }
 
+  Future _getImage() async {
+    setState(() {
+      showSpinner = true;
+    });
+    try {
+      profilePicURL = await FirebaseStorage.instance
+          .ref()
+          .child('seller/profilePic/${FirebaseAuth.instance.currentUser.email}')
+          .getDownloadURL();
+    } catch (e) {
+      setState(() {
+        noProfilePic = true;
+      });
+      print(noProfilePic);
+      print(e);
+    }
+    setState(() {
+      showSpinner = false;
+    });
+  }
+
   @override
   void initState() {
     super.initState();
     User user = FirebaseAuth.instance.currentUser;
     getUserName(user.email);
+    _getImage();
   }
 
   @override
@@ -91,24 +120,32 @@ class _ProfileScreenState extends State<ProfileScreen> {
         body: SingleChildScrollView(
           child: Column(
             children: [
-              ClipPath(
-                clipper: BottomWaveClipper(),
-                child: Container(
-                  height: height / 3.7,
-                  width: width,
-                  color: Colors.blue[300],
-                  child: Row(
+              Stack(
+                alignment: Alignment.center,
+                children: [
+                  ClipPath(
+                    clipper: BottomWaveClipper(),
+                    child: Container(
+                      height: height / 3.7,
+                      width: width,
+                      color: Colors.blue[300],
+                    ),
+                  ),
+                  Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Container(
-                          width: height / 6,
-                          height: height / 6,
-                          decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              image: DecorationImage(
-                                  fit: BoxFit.fill,
-                                  image: NetworkImage(
-                                      "https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcQruje6GylG0zg0LEmTpcI4l4Xrrd6CRgbw3w&usqp=CAU")))),
+                      showSpinner == false
+                          ? Container(
+                              width: height / 6,
+                              height: height / 6,
+                              decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  image: DecorationImage(
+                                      fit: BoxFit.fill,
+                                      image: NetworkImage(noProfilePic == false
+                                          ? profilePicURL
+                                          : "https://moonvillageassociation.org/wp-content/uploads/2018/06/default-profile-picture1.jpg"))))
+                          : CircularProgressIndicator(),
                       SizedBox(width: width / 12),
                       Column(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -118,7 +155,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               ? Text(userName,
                                   style: TextStyle(
                                       color: Colors.white,
-                                      fontSize: width / 25,
+                                      fontSize: width / 28,
                                       fontWeight: FontWeight.bold))
                               : Text("Loading name...",
                                   style: TextStyle(
@@ -149,9 +186,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       )
                     ],
                   ),
-                ),
+                ],
               ),
-              SizedBox(height: height / 30),
+              SizedBox(height: height / 70),
               _widget(
                   'Shop Name',
                   EditProfileStrings(
@@ -171,8 +208,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       hintText: "Enter new Mobile Number",
                       keyboardType: TextInputType.number)),
               _widget('List of Products', BottomNavigationBarScreen()),
-              _widget('Bank Details', ProfileScreen()),
-              _widget('Business Details', ProfileScreen()),
+              _widget(
+                  'Bank Details',
+                  BankDetails(
+                      userEmail: FirebaseAuth.instance.currentUser.email,
+                      fromProfile: true)),
+              _widget(
+                  'Business Details',
+                  BusinessDetails(
+                      fromProfile: true,
+                      userEmail: FirebaseAuth.instance.currentUser.email)),
               _widget('Signature', EditSignature()),
               _widget(
                   'Address',
@@ -180,6 +225,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       attribute: 'address',
                       hintText: "Enter new address",
                       keyboardType: TextInputType.streetAddress)),
+              _widget('Profile Picture', EditProfilePicture()),
               GestureDetector(
                   onTap: () async {
                     await FirebaseAuth.instance.signOut();
@@ -208,18 +254,18 @@ class BottomWaveClipper extends CustomClipper<Path> {
     var path = Path();
     path.lineTo(0.0, size.height - 20);
 
-    var firstControlPoint = Offset(size.width / 4, size.height);
-    var firstEndPoint = Offset(size.width / 2.25, size.height - 30.0);
+    var firstControlPoint = Offset(size.width / 20, size.height - 100);
+    var firstEndPoint = Offset(size.width / 1.3, size.height);
     path.quadraticBezierTo(firstControlPoint.dx, firstControlPoint.dy,
         firstEndPoint.dx, firstEndPoint.dy);
 
-    var secondControlPoint =
-        Offset(size.width - (size.width / 3.25), size.height - 65);
+    var secondControlPoint = Offset(size.width, size.height);
     var secondEndPoint = Offset(size.width, size.height - 40);
+
     path.quadraticBezierTo(secondControlPoint.dx, secondControlPoint.dy,
         secondEndPoint.dx, secondEndPoint.dy);
 
-    path.lineTo(size.width, size.height - 40);
+    path.lineTo(size.width, size.height);
     path.lineTo(size.width, 0.0);
     path.close();
 

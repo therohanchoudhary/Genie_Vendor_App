@@ -1,35 +1,43 @@
 import 'dart:io';
-import 'dart:ui';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:vendor_app/useful_methods.dart';
 
-class EditSignature extends StatefulWidget {
+import '../useful_methods.dart';
+
+class EditProfilePicture extends StatefulWidget {
   @override
-  _EditSignatureState createState() => _EditSignatureState();
+  _EditProfilePictureState createState() => _EditProfilePictureState();
 }
 
-class _EditSignatureState extends State<EditSignature> {
-  String signatureUrl;
+class _EditProfilePictureState extends State<EditProfilePicture> {
+  String profilePicURL;
   bool showSpinner = false;
-  File _newSigntaure;
+  File newProfilePic;
+
+  bool noProfilePic = false;
 
   Future _getImage() async {
-    final ref = FirebaseStorage.instance
-        .ref()
-        .child('seller/signature/${FirebaseAuth.instance.currentUser.email}');
-    signatureUrl = await ref.getDownloadURL();
-    setState(() {});
-    print(signatureUrl);
+    try {
+      profilePicURL = await FirebaseStorage.instance
+          .ref()
+          .child('seller/profilePic/${FirebaseAuth.instance.currentUser.email}')
+          .getDownloadURL();
+    } catch (e) {
+      setState(() {
+        noProfilePic = true;
+      });
+      print(noProfilePic);
+      print(e);
+    }
   }
 
   Future _getImageFile() async {
     var image = await ImagePicker().getImage(source: ImageSource.gallery);
-
     setState(() {
-      _newSigntaure = File(image.path);
+      newProfilePic = File(image.path);
     });
   }
 
@@ -42,7 +50,7 @@ class _EditSignatureState extends State<EditSignature> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Edit Signature')),
+      appBar: AppBar(title: Text('Edit Profile Picture')),
       body: Center(
         child: SingleChildScrollView(
           child: Column(
@@ -54,27 +62,36 @@ class _EditSignatureState extends State<EditSignature> {
                 children: [
                   Column(
                     children: [
-                      Text('Current Signature'),
+                      Text('Current Profile Picture',
+                          style: TextStyle(fontSize: 12)),
                       SizedBox(height: 20),
-                      signatureUrl == null
-                          ? CircularProgressIndicator()
+                      profilePicURL == null
+                          ? noProfilePic == true
+                              ? Container(
+                                  height: 200,
+                                  width: 200,
+                                  child: Image.network(
+                                      'https://moonvillageassociation.org/wp-content/uploads/2018/06/default-profile-picture1.jpg'),
+                                )
+                              : CircularProgressIndicator()
                           : Container(
                               height: 200,
                               width: 200,
-                              child: Image.network(signatureUrl)),
+                              child: Image.network(profilePicURL)),
                     ],
                   ),
-                  _newSigntaure != null
+                  newProfilePic != null
                       ? Column(
                           children: [
-                            Text('New Signature'),
+                            Text('New Profile Picture',
+                                style: TextStyle(fontSize: 12)),
                             SizedBox(height: 20),
-                            signatureUrl == null
+                            newProfilePic == null
                                 ? CircularProgressIndicator()
                                 : Container(
                                     height: 200,
                                     width: 200,
-                                    child: Image.file(_newSigntaure)),
+                                    child: Image.file(newProfilePic)),
                           ],
                         )
                       : SizedBox(width: 0),
@@ -83,7 +100,7 @@ class _EditSignatureState extends State<EditSignature> {
               SizedBox(height: 20),
               GestureDetector(
                 onTap: _getImageFile,
-                child: Text('Choose new signature',
+                child: Text('Choose new profile picture',
                     style: TextStyle(
                         color: Colors.blue,
                         decoration: TextDecoration.underline)),
@@ -92,25 +109,25 @@ class _EditSignatureState extends State<EditSignature> {
               showSpinner == false
                   ? GestureDetector(
                       onTap: () async {
-                        if (_newSigntaure != null) {
+                        if (newProfilePic != null) {
                           setState(() {
                             showSpinner = true;
                           });
                           StorageReference firebaseStorage =
                               FirebaseStorage.instance.ref().child(
-                                  'seller/signature/${FirebaseAuth.instance.currentUser.email}');
+                                  'seller/profilePic/${FirebaseAuth.instance.currentUser.email}');
                           StorageUploadTask uploadTask =
-                              firebaseStorage.putFile(_newSigntaure);
+                              firebaseStorage.putFile(newProfilePic);
 
                           await uploadTask.onComplete;
                           setState(() {
                             showSpinner = false;
                           });
-                          UsefulMethods()
-                              .showToast("Signature changed successfully.");
+                          UsefulMethods().showToast(
+                              "Profile picture changed successfully.");
                         } else {
                           UsefulMethods()
-                              .showToast("Signature file not changed");
+                              .showToast("Profile picture not changed");
                         }
                         Navigator.pop(context);
                       },
@@ -119,7 +136,7 @@ class _EditSignatureState extends State<EditSignature> {
                         width: 300,
                         padding: EdgeInsets.all(20),
                         child: Center(
-                            child: Text('Upload my signature now',
+                            child: Text('Upload my profile picture now',
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
                                     color: Colors.white, fontSize: 12))),

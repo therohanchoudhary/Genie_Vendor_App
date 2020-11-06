@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:vendor_app/menu/TabBarMenu.dart';
+import 'package:vendor_app/menu/tab_bar_menu.dart';
 import 'package:vendor_app/menu/add_product.dart';
 
 class CategoryScreen extends StatefulWidget {

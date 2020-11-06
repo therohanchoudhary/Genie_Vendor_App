@@ -25,9 +25,10 @@ class _SignatureScreen extends State<SignatureScreen> {
   TextEditingController accountNumber = TextEditingController();
 
   Future _getImage() async {
-    var image = await ImagePicker.pickImage(source: ImageSource.gallery);
+    var image = await ImagePicker().getImage(source: ImageSource.gallery);
+
     setState(() {
-      _signatureImage = image;
+      _signatureImage = File(image.path);
     });
   }
 
