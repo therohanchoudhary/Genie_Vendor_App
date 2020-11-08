@@ -1,12 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:vendor_app/useful_methods.dart';
 
 class ProductListScreen extends StatefulWidget {
   final bool outOfStock;
   final String category;
+  final int categoryNumber;
 
-  ProductListScreen({this.outOfStock, this.category});
+  ProductListScreen({this.outOfStock, this.category, this.categoryNumber});
 
   @override
   _ProductListScreenState createState() => _ProductListScreenState();
@@ -48,6 +50,8 @@ class ProductFirebase {
   final int mprice;
   final String name;
   final int oprice;
+  final gst;
+  final delivery;
   final List reviews;
   final String rnr;
   final String seller;
@@ -58,12 +62,14 @@ class ProductFirebase {
 
   ProductFirebase({
     this.id,
+    this.delivery,
     this.category,
     this.freq,
     this.values,
     this.brand,
     this.desc,
     this.discount,
+    this.gst,
     this.img,
     this.name,
     this.isveg,
@@ -89,8 +95,10 @@ class _ProductListScreenState extends State<ProductListScreen> {
   bool noProducts = false;
 
   Future _getData(String email) async {
-    var _db =
-        await FirebaseFirestore.instance.collection("shop").doc('2').get();
+    var _db = await FirebaseFirestore.instance
+        .collection("shop")
+        .doc('${widget.categoryNumber}')
+        .get();
     var id;
     await FirebaseFirestore.instance
         .collection("registerSeller")
@@ -105,6 +113,7 @@ class _ProductListScreenState extends State<ProductListScreen> {
         category: _db.data()["products"][i]["category"],
         rnr: _db.data()["products"][i]["rnr"],
         brand: _db.data()["products"][i]["brand"],
+        delivery: _db.data()["products"][i]["deliveryAmount"],
         lat: _db.data()["products"][i]["lat"],
         values: _db.data()["products"][i]["values"],
         reviews: _db.data()["products"][i]["reviews"],
@@ -115,6 +124,7 @@ class _ProductListScreenState extends State<ProductListScreen> {
         units: _db.data()["products"][i]["units"],
         name: _db.data()["products"][i]["name"],
         seller: _db.data()["products"][i]["seller"],
+        gst: _db.data()["products"][i]["gstAmount"],
         sellerid: _db.data()["products"][i]["sellerid"],
         desc: _db.data()["products"][i]["desc"],
         img: _db.data()["products"][i]["img"],
@@ -131,14 +141,14 @@ class _ProductListScreenState extends State<ProductListScreen> {
           _db.data()["products"][i]["outOfStock"] == widget.outOfStock) {
         productList.add(
           ProductList(
-              offer: _db.data()["products"][i]["discount"].toString() + "% OFF",
+              offer: _db.data()["products"][i]["discount"].toString() + " OFF",
               name: _db.data()["products"][i]["name"].toString(),
               firebaseIndex: i,
               type: _db
                   .data()["products"][i]["category"]
                   .toString()
                   .toUpperCase(),
-              rate: _db.data()["products"][i]["mprice"].toString(),
+              rate: _db.data()["products"][i]["oprice"].toString(),
               outOfStock: _db.data()["products"][i]["outOfStock"] == true,
               image: _db.data()["products"][i]["img"][0]),
         );
@@ -226,167 +236,107 @@ class _ProductListScreenState extends State<ProductListScreen> {
                                               fontSize: height / 70)),
                                     ],
                                   ),
-                                  SizedBox(width: width / 9),
+                                  Flexible(child: SizedBox(width: width / 9)),
                                   Switch(
-                                    value: !productList[index].outOfStock,
-                                    onChanged: (value) async {
-                                      setState(() {
-                                        print(!widget.outOfStock);
-                                        print(productList[index].firebaseIndex);
-                                        productsFirebase[productList[index]
-                                                .firebaseIndex]
-                                            .outOfStock = !widget.outOfStock;
-                                      });
+                                      value: !productList[index].outOfStock,
+                                      onChanged: (value) async {
+                                        var productIndex = productsFirebase[
+                                            productList[productList[index]
+                                                    .firebaseIndex]
+                                                .firebaseIndex];
 
-                                      await FirebaseFirestore.instance
-                                          .collection('shop')
-                                          .doc('2')
-                                          .update({
-                                        "products": FieldValue.arrayRemove([
-                                          {
-                                            "category": productsFirebase[
-                                                    productList[
-                                                            productList[index]
-                                                                .firebaseIndex]
-                                                        .firebaseIndex]
-                                                .category,
-                                            "outOfStock": widget.outOfStock,
-                                            "brand": productsFirebase[
-                                                    productList[index]
-                                                        .firebaseIndex]
-                                                .brand,
-                                            "desc": productsFirebase[
-                                                    productList[index]
-                                                        .firebaseIndex]
-                                                .desc,
-                                            "discount": productsFirebase[
-                                                    productList[index]
-                                                        .firebaseIndex]
-                                                .discount,
-                                            "name": productsFirebase[
-                                                    productList[index]
-                                                        .firebaseIndex]
-                                                .name,
-                                            "oprice": productsFirebase[
-                                                    productList[index]
-                                                        .firebaseIndex]
-                                                .oprice,
-                                            "isveg": true,
-                                            "life": "5 years",
-                                            "lat": 28.0,
-                                            "long": 72.0,
-                                            "mprice": productsFirebase[
-                                                    productList[index]
-                                                        .firebaseIndex]
-                                                .mprice,
-                                            "id":
-                                                "${productsFirebase[productList[index].firebaseIndex].id}",
-                                            "sellerid":
-                                                "${productsFirebase[productList[index].firebaseIndex].sellerid}",
-                                            "seller": productsFirebase[
-                                                    productList[index]
-                                                        .firebaseIndex]
-                                                .seller,
-                                            "rnr": productsFirebase[
-                                                    productList[index]
-                                                        .firebaseIndex]
-                                                .rnr,
-                                            "freq": productsFirebase[
-                                                    productList[index]
-                                                        .firebaseIndex]
-                                                .freq,
-                                            "manufacturer": "Manufacturer",
-                                            "marketedby": "Marketer",
-                                            "img": productsFirebase[
-                                                    productList[index]
-                                                        .firebaseIndex]
-                                                .img,
-                                            "units": "box",
-                                            "reviews": productsFirebase[
-                                                    productList[index]
-                                                        .firebaseIndex]
-                                                .reviews,
-                                            "values": [1, 2],
-                                          }
-                                        ]),
-                                      });
-                                      await FirebaseFirestore.instance
-                                          .collection('shop')
-                                          .doc('2')
-                                          .update({
-                                        "products": FieldValue.arrayUnion([
-                                          {
-                                            "category": productsFirebase[
-                                                    productList[
-                                                            productList[index]
-                                                                .firebaseIndex]
-                                                        .firebaseIndex]
-                                                .category,
-                                            "outOfStock": !widget.outOfStock,
-                                            "brand": productsFirebase[
-                                                    productList[index]
-                                                        .firebaseIndex]
-                                                .brand,
-                                            "desc": productsFirebase[
-                                                    productList[index]
-                                                        .firebaseIndex]
-                                                .desc,
-                                            "discount": productsFirebase[
-                                                    productList[index]
-                                                        .firebaseIndex]
-                                                .discount,
-                                            "name": productsFirebase[
-                                                    productList[index]
-                                                        .firebaseIndex]
-                                                .name,
-                                            "oprice": productsFirebase[
-                                                    productList[index]
-                                                        .firebaseIndex]
-                                                .oprice,
-                                            "isveg": true,
-                                            "life": "5 years",
-                                            "lat": 28.0,
-                                            "long": 72.0,
-                                            "mprice": productsFirebase[
-                                                    productList[index]
-                                                        .firebaseIndex]
-                                                .mprice,
-                                            "id":
-                                                "${productsFirebase[productList[index].firebaseIndex].id}",
-                                            "sellerid":
-                                                "${productsFirebase[productList[index].firebaseIndex].sellerid}",
-                                            "seller": productsFirebase[
-                                                    productList[index]
-                                                        .firebaseIndex]
-                                                .seller,
-                                            "rnr": productsFirebase[
-                                                    productList[index]
-                                                        .firebaseIndex]
-                                                .rnr,
-                                            "freq": productsFirebase[
-                                                    productList[index]
-                                                        .firebaseIndex]
-                                                .freq,
-                                            "manufacturer": "Manufacturer",
-                                            "marketedby": "Marketer",
-                                            "img": productsFirebase[
-                                                    productList[index]
-                                                        .firebaseIndex]
-                                                .img,
-                                            "units": "box",
-                                            "reviews": productsFirebase[
-                                                    productList[index]
-                                                        .firebaseIndex]
-                                                .reviews,
-                                            "values": [1, 2],
-                                          }
-                                        ]),
-                                      });
-                                      Navigator.pop(context);
-                                    },
-                                    activeColor: Colors.white,
-                                    activeTrackColor: Colors.blue,
-                                  ),
+                                        setState(() {
+                                          productIndex.outOfStock =
+                                              !widget.outOfStock;
+                                        });
+
+                                        await FirebaseFirestore.instance
+                                            .collection('shop')
+                                            .doc('${widget.categoryNumber}')
+                                            .update({
+                                          "products": FieldValue.arrayRemove([
+                                            {
+                                              "category": productIndex.category,
+                                              "outOfStock":
+                                                  !productIndex.outOfStock,
+                                              "brand": productIndex.brand,
+                                              "desc": productIndex.desc,
+                                              "discount": productIndex.discount,
+                                              "deliveryAmount":
+                                                  productIndex.delivery,
+                                              "name": productIndex.name,
+                                              "oprice": productIndex.oprice,
+                                              "isveg": productIndex.isveg,
+                                              "life": productIndex.life,
+                                              "lat": productIndex.lat,
+                                              "long": productIndex.long,
+                                              "mprice": productIndex.mprice,
+                                              "gstAmount": productIndex.gst,
+                                              "id": "${productIndex.id}",
+                                              "sellerid":
+                                                  "${productIndex.sellerid}",
+                                              "seller": productIndex.seller,
+                                              "rnr": productIndex.rnr,
+                                              "freq": productIndex.freq,
+                                              "manufacturer":
+                                                  productIndex.manufacturer,
+                                              "marketedby":
+                                                  productIndex.marketedby,
+                                              "img": productIndex.img,
+                                              "units": productIndex.units,
+                                              "reviews": productIndex.reviews,
+                                              "values": productIndex.values,
+                                            }
+                                          ]),
+                                        });
+                                        await FirebaseFirestore.instance
+                                            .collection('shop')
+                                            .doc('${widget.categoryNumber}')
+                                            .update({
+                                          "products": FieldValue.arrayUnion([
+                                            {
+                                              "category": productIndex.category,
+                                              "outOfStock":
+                                                  productIndex.outOfStock,
+                                              "brand": productIndex.brand,
+                                              "desc": productIndex.desc,
+                                              "discount": productIndex.discount,
+                                              "name": productIndex.name,
+                                              "oprice": productIndex.oprice,
+                                              "isveg": productIndex.isveg,
+                                              "life": productIndex.life,
+                                              "lat": productIndex.lat,
+                                              "long": productIndex.long,
+                                              "mprice": productIndex.mprice,
+                                              "gstAmount": productIndex.gst,
+                                              "deliveryAmount":
+                                                  productIndex.delivery,
+                                              "id": "${productIndex.id}",
+                                              "sellerid":
+                                                  "${productIndex.sellerid}",
+                                              "seller": productIndex.seller,
+                                              "rnr": productIndex.rnr,
+                                              "freq": productIndex.freq,
+                                              "manufacturer":
+                                                  productIndex.manufacturer,
+                                              "marketedby":
+                                                  productIndex.marketedby,
+                                              "img": productIndex.img,
+                                              "units": productIndex.units,
+                                              "reviews": productIndex.reviews,
+                                              "values": productIndex.values,
+                                            }
+                                          ]),
+                                        });
+                                        String text = productIndex.outOfStock ==
+                                                false
+                                            ? "${productIndex.name} is in stock now"
+                                            : "${productIndex.name} is out of stock now";
+                                        UsefulMethods().showToast(text);
+                                        Navigator.pop(context);
+                                      },
+                                      activeColor: Colors.white,
+                                      activeTrackColor: Colors.blue),
                                 ],
                               ),
                             ),
@@ -400,22 +350,19 @@ class _ProductListScreenState extends State<ProductListScreen> {
                     ? Column(
                         children: [
                           SizedBox(height: 20),
-                          Center(child: CircularProgressIndicator()),
+                          Center(child: CircularProgressIndicator())
                         ],
                       )
                     : Center(
                         child: widget.outOfStock == true
                             ? Padding(
-                                padding: const EdgeInsets.all(18.0),
+                                padding: EdgeInsets.all(18.0),
                                 child: Text('No Products are out of stock.',
-                                    textAlign: TextAlign.center),
-                              )
+                                    textAlign: TextAlign.center))
                             : Padding(
-                                padding: const EdgeInsets.all(18.0),
+                                padding: EdgeInsets.all(18.0),
                                 child: Text('No Products registered by you.',
-                                    textAlign: TextAlign.center),
-                              ),
-                      ),
+                                    textAlign: TextAlign.center))),
           ],
         ),
       ),

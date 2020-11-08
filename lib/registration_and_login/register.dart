@@ -50,7 +50,6 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
     TextEditingController emailEntered = TextEditingController();
     TextEditingController mobileNumberEntered = TextEditingController();
     TextEditingController passwordEntered = TextEditingController();
-    TextEditingController otpEntered = TextEditingController();
     TextEditingController addressEntered = TextEditingController();
 
     final databaseReference = FirebaseFirestore.instance;
@@ -62,6 +61,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 SizedBox(height: 25),
+                Image.asset('assets/images/logo1.png'),
                 Text('Register',
                     style: TextStyle(
                         color: Colors.grey[500],
@@ -80,6 +80,10 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                 SizedBox(height: 30),
                 GestureDetector(
                   onTap: () async {
+                    var allUsers = await FirebaseFirestore.instance
+                        .collection('registerSeller')
+                        .get();
+
                     try {
                       setState(() {
                         _showProgressIndicator = true;
@@ -100,7 +104,8 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                         "password": passwordEntered.text,
                         "mobileNumber": mobileNumberEntered.text,
                         "verified": false,
-                        "productsUploaded": 0
+                        "productsUploaded": 0,
+                        "id": "${(allUsers.docs.length * 5) + 10000009}"
                       });
 
                       setState(() {
@@ -116,14 +121,12 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                                       fromProfile: false)));
                     } catch (e) {
                       print(e);
-                      UsefulMethods()
-                          .showToast("Please enter correct credentials");
-                      emailEntered.text = "";
-                      passwordEntered.text = "";
-                      mobileNumberEntered.text = "";
-                      otpEntered.text = "";
-                      addressEntered.text = "";
-                      usernameEntered.text = "";
+                      if (e.code == 'email-already-in-use')
+                        UsefulMethods()
+                            .showToast("Please use a different email address.");
+                      else
+                        UsefulMethods()
+                            .showToast("Please enter correct credentials.");
 
                       setState(() {
                         _showProgressIndicator = false;
@@ -148,20 +151,21 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                         )
                       : CircularProgressIndicator(),
                 ),
-                SizedBox(height: 40),
+                SizedBox(height: 20),
                 GestureDetector(
                   onTap: () => Navigator.push(
                       context,
                       MaterialPageRoute(
                           builder: (BuildContext context) => LoginScreen())),
                   child: Text(
-                    'Login',
+                    'Already have an account? Login',
                     style: TextStyle(
-                        fontSize: 14,
+                        fontSize: 10,
                         color: Colors.blue,
                         decoration: TextDecoration.underline),
                   ),
-                )
+                ),
+                SizedBox(height: 40),
               ],
             ),
           ),

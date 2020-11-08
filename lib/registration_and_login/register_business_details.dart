@@ -57,6 +57,8 @@ class _BusinessDetailsState extends State<BusinessDetails> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                SizedBox(height: 25),
+                Image.asset('assets/images/logo1.png'),
                 Center(
                     child: Text(
                   'Give your Business Details',
@@ -91,43 +93,41 @@ class _BusinessDetailsState extends State<BusinessDetails> {
                     },
                     child: _widget(_choice3, 3)),
                 SizedBox(height: 70),
-                Stack(
-                  alignment: Alignment(0.78, 0.00),
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(20.0),
-                      child: TextField(
-                        maxLines: 1,
-                        controller: ggstinNumber,
-                        decoration: InputDecoration(
-                            focusedBorder: OutlineInputBorder(
-                              borderSide:
-                                  BorderSide(color: Colors.blue, width: 2.0),
-                              borderRadius: BorderRadius.circular(40),
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                  color: Colors.grey[300], width: 2.0),
-                              borderRadius: BorderRadius.circular(40),
-                            ),
-                            filled: true,
-                            isDense: true,
-                            contentPadding: EdgeInsets.all(20),
-                            hintStyle: TextStyle(
-                                color: Colors.grey[500], fontSize: 12),
-                            hintText: 'GGSTIN Number',
-                            fillColor: Colors.grey[300]),
-                      ),
-                    ),
-                    Text('Verify', style: TextStyle(fontSize: 12)),
-                  ],
-                ),
+                _number == 1
+                    ? Padding(
+                        padding: const EdgeInsets.all(20.0),
+                        child: TextField(
+                          maxLines: 1,
+                          controller: ggstinNumber,
+                          decoration: InputDecoration(
+                              focusedBorder: OutlineInputBorder(
+                                borderSide:
+                                    BorderSide(color: Colors.blue, width: 2.0),
+                                borderRadius: BorderRadius.circular(40),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: Colors.grey[300], width: 2.0),
+                                borderRadius: BorderRadius.circular(40),
+                              ),
+                              filled: true,
+                              isDense: true,
+                              contentPadding: EdgeInsets.all(20),
+                              hintStyle: TextStyle(
+                                  color: Colors.grey[500], fontSize: 12),
+                              hintText: 'GGSTIN Number',
+                              fillColor: Colors.grey[300]),
+                        ),
+                      )
+                    : Container(),
                 SizedBox(height: 40),
                 GestureDetector(
                   onTap: () async {
                     _showProgressIndicator = true;
 
-                    if (ggstinNumber.text != null && ggstinNumber.text != "") {
+                    if (_number != 1 ||
+                        (ggstinNumber.text != null &&
+                            ggstinNumber.text != "")) {
                       await FirebaseFirestore.instance
                           .collection('registerSeller')
                           .doc(widget.userEmail)

@@ -103,9 +103,11 @@ class _OrderScreenState extends State<OrderScreen> {
                       itemCount: orderList.length,
                       scrollDirection: Axis.vertical,
                       itemBuilder: (BuildContext context, int index) {
-                        if (orderList[index].orderStatus ==
-                                widget.orderStatus ||
-                            widget.orderStatus == 'Placed') {
+                        if ((orderList[index].orderStatus ==
+                                widget.orderStatus) ||
+                            (widget.orderStatus == 'All') ||
+                            (orderList[index].orderStatus == "Waiting.." &&
+                                widget.orderStatus == 'New Order')) {
                           return Column(
                             children: [
                               Container(

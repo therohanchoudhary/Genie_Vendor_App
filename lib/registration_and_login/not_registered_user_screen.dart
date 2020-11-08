@@ -17,6 +17,9 @@ class _WaitingScreenState extends State<WaitingScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              SizedBox(height: 25),
+              Image.asset('assets/images/logo1.png'),
+              SizedBox(height: 25),
               Text(
                   'Please wait ${user.email}.\n'
                   'Your registration details are under our review.\n',

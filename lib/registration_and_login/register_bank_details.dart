@@ -58,6 +58,8 @@ class _BankDetails extends State<BankDetails> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                SizedBox(height: 25),
+                Image.asset('assets/images/logo1.png'),
                 Center(
                     child: Text(
                   'Give your Bank Details',
@@ -84,57 +86,61 @@ class _BankDetails extends State<BankDetails> {
                     },
                     child: _widget(_choice2, 2)),
                 SizedBox(height: 70),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                  child: TextField(
-                    maxLines: 1,
-                    controller: accountName,
-                    decoration: InputDecoration(
-                        focusedBorder: OutlineInputBorder(
-                          borderSide:
-                              BorderSide(color: Colors.blue, width: 2.0),
-                          borderRadius: BorderRadius.circular(40),
+                _number == 1
+                    ? Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                        child: TextField(
+                          maxLines: 1,
+                          controller: accountName,
+                          decoration: InputDecoration(
+                              focusedBorder: OutlineInputBorder(
+                                borderSide:
+                                    BorderSide(color: Colors.blue, width: 2.0),
+                                borderRadius: BorderRadius.circular(40),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: Colors.grey[300], width: 2.0),
+                                borderRadius: BorderRadius.circular(40),
+                              ),
+                              filled: true,
+                              isDense: true,
+                              contentPadding: EdgeInsets.all(20),
+                              hintStyle: TextStyle(
+                                  color: Colors.grey[500], fontSize: 12),
+                              hintText: "Account holder's name",
+                              fillColor: Colors.grey[300]),
                         ),
-                        enabledBorder: OutlineInputBorder(
-                          borderSide:
-                              BorderSide(color: Colors.grey[300], width: 2.0),
-                          borderRadius: BorderRadius.circular(40),
-                        ),
-                        filled: true,
-                        isDense: true,
-                        contentPadding: EdgeInsets.all(20),
-                        hintStyle:
-                            TextStyle(color: Colors.grey[500], fontSize: 12),
-                        hintText: "Account holder's name",
-                        fillColor: Colors.grey[300]),
-                  ),
-                ),
+                      )
+                    : Container(),
                 SizedBox(height: 20),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                  child: TextField(
-                    maxLines: 1,
-                    controller: accountNumber,
-                    decoration: InputDecoration(
-                        focusedBorder: OutlineInputBorder(
-                          borderSide:
-                              BorderSide(color: Colors.blue, width: 2.0),
-                          borderRadius: BorderRadius.circular(40),
+                _number == 1
+                    ? Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                        child: TextField(
+                          maxLines: 1,
+                          controller: accountNumber,
+                          decoration: InputDecoration(
+                              focusedBorder: OutlineInputBorder(
+                                borderSide:
+                                    BorderSide(color: Colors.blue, width: 2.0),
+                                borderRadius: BorderRadius.circular(40),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: Colors.grey[300], width: 2.0),
+                                borderRadius: BorderRadius.circular(40),
+                              ),
+                              filled: true,
+                              isDense: true,
+                              contentPadding: EdgeInsets.all(20),
+                              hintStyle: TextStyle(
+                                  color: Colors.grey[500], fontSize: 12),
+                              hintText: 'Bank Account Number',
+                              fillColor: Colors.grey[300]),
                         ),
-                        enabledBorder: OutlineInputBorder(
-                          borderSide:
-                              BorderSide(color: Colors.grey[300], width: 2.0),
-                          borderRadius: BorderRadius.circular(40),
-                        ),
-                        filled: true,
-                        isDense: true,
-                        contentPadding: EdgeInsets.all(20),
-                        hintStyle:
-                            TextStyle(color: Colors.grey[500], fontSize: 12),
-                        hintText: 'Bank Account Number',
-                        fillColor: Colors.grey[300]),
-                  ),
-                ),
+                      )
+                    : Container(),
                 SizedBox(height: 40),
                 GestureDetector(
                   onTap: () async {

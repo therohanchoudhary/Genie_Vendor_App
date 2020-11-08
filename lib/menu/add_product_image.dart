@@ -83,7 +83,33 @@ class _ProductAddImageState extends State<ProductAddImage> {
                       : Container(
                           height: height / 3,
                           width: width / 2.5,
-                          child: Image.file(image1)),
+                          child: Stack(alignment: Alignment(0, 0.8), children: [
+                            Image.file(image1),
+                            GestureDetector(
+                              onTap: () async {
+                                var image = await ImagePicker()
+                                    .getImage(source: ImageSource.gallery);
+
+                                setState(() {
+                                  image1 = File(image.path);
+                                });
+                                uploadImage(1, image1);
+                              },
+                              child: Container(
+                                  height: height / 20,
+                                  width: width / 5,
+                                  decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      border: Border.all(color: Colors.blue),
+                                      borderRadius:
+                                          BorderRadius.circular(1000)),
+                                  child: Center(
+                                      child: Text(
+                                    'Edit',
+                                    style: TextStyle(color: Colors.blue),
+                                  ))),
+                            )
+                          ])),
                   SizedBox(width: width / 10),
                   image2 == null
                       ? GestureDetector(
@@ -112,7 +138,33 @@ class _ProductAddImageState extends State<ProductAddImage> {
                       : Container(
                           height: height / 3,
                           width: width / 2.5,
-                          child: Image.file(image2)),
+                          child: Stack(alignment: Alignment(0, 0.8), children: [
+                            Image.file(image2),
+                            GestureDetector(
+                              onTap: () async {
+                                var image = await ImagePicker()
+                                    .getImage(source: ImageSource.gallery);
+
+                                setState(() {
+                                  image2 = File(image.path);
+                                });
+                                uploadImage(2, image2);
+                              },
+                              child: Container(
+                                  height: height / 20,
+                                  width: width / 5,
+                                  decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      border: Border.all(color: Colors.blue),
+                                      borderRadius:
+                                          BorderRadius.circular(1000)),
+                                  child: Center(
+                                      child: Text(
+                                    'Edit',
+                                    style: TextStyle(color: Colors.blue),
+                                  ))),
+                            )
+                          ])),
                 ],
               ),
               SizedBox(height: height / 20),
@@ -146,7 +198,33 @@ class _ProductAddImageState extends State<ProductAddImage> {
                       : Container(
                           height: height / 3,
                           width: width / 2.5,
-                          child: Image.file(image3)),
+                          child: Stack(alignment: Alignment(0, 0.8), children: [
+                            Image.file(image3),
+                            GestureDetector(
+                              onTap: () async {
+                                var image = await ImagePicker()
+                                    .getImage(source: ImageSource.gallery);
+
+                                setState(() {
+                                  image3 = File(image.path);
+                                });
+                                uploadImage(3, image3);
+                              },
+                              child: Container(
+                                  height: height / 20,
+                                  width: width / 5,
+                                  decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      border: Border.all(color: Colors.blue),
+                                      borderRadius:
+                                          BorderRadius.circular(1000)),
+                                  child: Center(
+                                      child: Text(
+                                    'Edit',
+                                    style: TextStyle(color: Colors.blue),
+                                  ))),
+                            )
+                          ])),
                   SizedBox(width: width / 10),
                   image4 == null
                       ? GestureDetector(
@@ -175,7 +253,33 @@ class _ProductAddImageState extends State<ProductAddImage> {
                       : Container(
                           height: height / 3,
                           width: width / 2.5,
-                          child: Image.file(image4)),
+                          child: Stack(alignment: Alignment(0, 0.8), children: [
+                            Image.file(image4),
+                            GestureDetector(
+                              onTap: () async {
+                                var image = await ImagePicker()
+                                    .getImage(source: ImageSource.gallery);
+
+                                setState(() {
+                                  image4 = File(image.path);
+                                });
+                                uploadImage(4, image4);
+                              },
+                              child: Container(
+                                  height: height / 20,
+                                  width: width / 5,
+                                  decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      border: Border.all(color: Colors.blue),
+                                      borderRadius:
+                                          BorderRadius.circular(1000)),
+                                  child: Center(
+                                      child: Text(
+                                    'Edit',
+                                    style: TextStyle(color: Colors.blue),
+                                  ))),
+                            )
+                          ])),
                 ],
               ),
               SizedBox(height: height / 50),
