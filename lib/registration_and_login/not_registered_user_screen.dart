@@ -18,7 +18,7 @@ class _WaitingScreenState extends State<WaitingScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               SizedBox(height: 25),
-              Image.asset('assets/images/logos/logo1.png'),
+              Image.asset('assets/images/logo1.png'),
               SizedBox(height: 25),
               Text(
                   'Please wait ${user.email}.\n'

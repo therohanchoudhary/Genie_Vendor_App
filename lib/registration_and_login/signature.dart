@@ -1,14 +1,17 @@
 import 'dart:io';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:vendor_app/registration_and_login/login.dart';
+import 'package:vendor_app/useful_methods.dart';
 
 class SignatureScreen extends StatefulWidget {
   final String userEmail;
+  final String password;
 
-  SignatureScreen({this.userEmail});
+  SignatureScreen({this.userEmail, this.password});
 
   @override
   _SignatureScreen createState() => _SignatureScreen();
@@ -48,7 +51,7 @@ class _SignatureScreen extends State<SignatureScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 SizedBox(height: 25),
-                Image.asset('assets/images/logos/logo1.png'),
+                Image.asset('assets/images/logo1.png'),
                 Center(
                     child: Text('Signature',
                         style: TextStyle(
@@ -86,12 +89,17 @@ class _SignatureScreen extends State<SignatureScreen> {
                   onTap: () async {
                     if (_signatureImage != null) {
                       _uploadImage();
+                      await FirebaseAuth.instance
+                          .createUserWithEmailAndPassword(
+                              email: widget.userEmail,
+                              password: widget.password);
                       Navigator.push(
                           context,
                           MaterialPageRoute(
                               builder: (BuildContext context) =>
                                   LoginScreen()));
-                    }
+                    } else
+                      UsefulMethods().showToast('Please upload your signature');
                   },
                   child: showProgressIndicator == false
                       ? Container(

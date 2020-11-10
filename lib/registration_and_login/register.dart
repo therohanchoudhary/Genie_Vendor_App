@@ -61,7 +61,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 SizedBox(height: 25),
-                Image.asset('assets/images/logos/logo1.png'),
+                Image.asset('assets/images/logo1.png'),
                 Text('Register',
                     style: TextStyle(
                         color: Colors.grey[500],
@@ -89,48 +89,46 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                         _showProgressIndicator = true;
                       });
 
-                      await FirebaseAuth.instance
-                          .createUserWithEmailAndPassword(
-                              email: emailEntered.text,
-                              password: passwordEntered.text);
-
-                      await databaseReference
-                          .collection('registerSeller')
-                          .doc(emailEntered.text.toString())
-                          .set({
-                        "name": usernameEntered.text,
-                        "email": emailEntered.text,
-                        "address": addressEntered.text,
-                        "password": passwordEntered.text,
-                        "mobileNumber": mobileNumberEntered.text,
-                        "verified": false,
-                        "productsUploaded": 0,
-                        "id": "${(allUsers.docs.length * 5) + 10000009}"
-                      });
+                      if (passwordEntered.text.length > 6) {
+                        await databaseReference
+                            .collection('registerSeller')
+                            .doc(emailEntered.text.toString())
+                            .set({
+                          "name": usernameEntered.text,
+                          "email": emailEntered.text,
+                          "address": addressEntered.text,
+                          "password": passwordEntered.text,
+                          "mobileNumber": mobileNumberEntered.text,
+                          "verified": false,
+                          "productsUploaded": 0,
+                          "id": "${(allUsers.docs.length * 5) + 10000009}",
+                          'businessDetail': "",
+                          'ggstinNumber': "",
+                          'bankDetail': "",
+                          'bankAccountName': "",
+                          'bankAccountNumber': "",
+                        });
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (BuildContext context) =>
+                                    BusinessDetails(
+                                        userEmail: emailEntered.text,
+                                        password: passwordEntered.text,
+                                        fromProfile: false)));
+                      } else
+                        UsefulMethods()
+                            .showToast('Please enter a strong password');
 
                       setState(() {
                         _showProgressIndicator = false;
                       });
-
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (BuildContext context) =>
-                                  BusinessDetails(
-                                      userEmail: emailEntered.text,
-                                      fromProfile: false)));
                     } catch (e) {
-                      print(e);
-                      if (e.code == 'email-already-in-use')
-                        UsefulMethods()
-                            .showToast("Please use a different email address.");
-                      else
-                        UsefulMethods()
-                            .showToast("Please enter correct credentials.");
-
                       setState(() {
                         _showProgressIndicator = false;
                       });
+                      UsefulMethods()
+                          .showToast("Please enter correct credentials.");
                     }
                   },
                   child: _showProgressIndicator == false

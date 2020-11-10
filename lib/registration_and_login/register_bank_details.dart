@@ -7,8 +7,9 @@ import 'package:vendor_app/useful_methods.dart';
 class BankDetails extends StatefulWidget {
   final String userEmail;
   final bool fromProfile;
+  final String password;
 
-  BankDetails({this.userEmail, this.fromProfile});
+  BankDetails({this.userEmail, this.fromProfile, this.password});
 
   @override
   _BankDetails createState() => _BankDetails();
@@ -59,7 +60,7 @@ class _BankDetails extends State<BankDetails> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 SizedBox(height: 25),
-                Image.asset('assets/images/logos/logo1.png'),
+                Image.asset('assets/images/logo1.png'),
                 Center(
                     child: Text(
                   'Give your Bank Details',
@@ -147,10 +148,11 @@ class _BankDetails extends State<BankDetails> {
                     setState(() {
                       showProgressIndicator = true;
                     });
-                    if (accountName.text != "" &&
-                        accountName.text != null &&
-                        accountNumber.text != "" &&
-                        accountNumber.text != "") {
+                    if ((accountName.text != "" &&
+                            accountName.text != null &&
+                            accountNumber.text != "" &&
+                            accountNumber.text != "") ||
+                        _number != 1) {
                       await FirebaseFirestore.instance
                           .collection('registerSeller')
                           .doc(widget.userEmail)
@@ -173,15 +175,18 @@ class _BankDetails extends State<BankDetails> {
                             MaterialPageRoute(
                                 builder: (BuildContext context) =>
                                     SignatureScreen(
+                                        password: widget.password,
                                         userEmail: widget.userEmail)));
                       }
                     } else {
                       UsefulMethods().showToast("Incorrect Credentials");
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (BuildContext context) =>
-                                  BottomNavigationBarScreen()));
+                      if (widget.fromProfile == true) {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (BuildContext context) =>
+                                    BottomNavigationBarScreen()));
+                      }
                     }
                     setState(() {
                       showProgressIndicator = false;

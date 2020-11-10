@@ -137,8 +137,7 @@ class _ProductListScreenState extends State<ProductListScreen> {
       setState(() {});
 
       if (_db.data()["products"][i]["sellerid"].toString() == id.toString() &&
-          _db.data()["products"][i]["category"].toString() == widget.category &&
-          _db.data()["products"][i]["outOfStock"] == widget.outOfStock) {
+          _db.data()["products"][i]["category"].toString() == widget.category) {
         productList.add(
           ProductList(
               offer: _db.data()["products"][i]["discount"].toString() + " OFF",

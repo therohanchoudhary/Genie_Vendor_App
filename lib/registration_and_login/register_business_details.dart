@@ -7,8 +7,9 @@ import 'package:vendor_app/useful_methods.dart';
 class BusinessDetails extends StatefulWidget {
   final String userEmail;
   final bool fromProfile;
+  final String password;
 
-  BusinessDetails({this.userEmail, this.fromProfile});
+  BusinessDetails({this.userEmail, this.fromProfile,this.password});
 
   @override
   _BusinessDetailsState createState() => _BusinessDetailsState();
@@ -58,7 +59,7 @@ class _BusinessDetailsState extends State<BusinessDetails> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 SizedBox(height: 25),
-                Image.asset('assets/images/logos/logo1.png'),
+                Image.asset('assets/images/logo1.png'),
                 Center(
                     child: Text(
                   'Give your Business Details',
@@ -149,14 +150,17 @@ class _BusinessDetailsState extends State<BusinessDetails> {
                             MaterialPageRoute(
                                 builder: (BuildContext context) => BankDetails(
                                     userEmail: widget.userEmail,
+                                    password: widget.password,
                                     fromProfile: false)));
                       }
                     } else {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (BuildContext context) =>
-                                  BottomNavigationBarScreen()));
+                      if (widget.fromProfile == true) {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (BuildContext context) =>
+                                    BottomNavigationBarScreen()));
+                      }
                       UsefulMethods().showToast("Incorrect credentials.");
                     }
                     _showProgressIndicator = false;

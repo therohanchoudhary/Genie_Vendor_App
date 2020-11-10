@@ -48,7 +48,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
         } else {
           if (x["sellerid"] == sellerId) {
             categoryList.add(CategoriesContent(
-                image: "assets/images/category/${ii == 12 ? ii : ii + 1}.png",
+                image: "assets/images/${ii == 12 ? ii : ii + 1}.png",
                 category: x["category"],
                 categoryNumber: ii));
             var categoryNumbers =
@@ -105,6 +105,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
                       width: width / 2.3,
                       height: height / 7,
                       decoration: BoxDecoration(
+                          color: Colors.white,
                           borderRadius: BorderRadius.circular(20),
                           image: DecorationImage(
                               fit: BoxFit.cover,
