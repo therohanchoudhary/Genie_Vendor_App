@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:vendor_app/registration_and_login/email_verification.dart';
+import 'package:vendor_app/registration_and_login/login.dart';
 
 class SignatureScreen extends StatefulWidget {
   final String userEmail;
@@ -90,7 +90,7 @@ class _SignatureScreen extends State<SignatureScreen> {
                           context,
                           MaterialPageRoute(
                               builder: (BuildContext context) =>
-                                  EmailVerification()));
+                                  LoginScreen()));
                     }
                   },
                   child: showProgressIndicator == false

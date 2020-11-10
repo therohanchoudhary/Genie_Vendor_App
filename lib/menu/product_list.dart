@@ -117,7 +117,7 @@ class _ProductListScreenState extends State<ProductListScreen> {
         lat: _db.data()["products"][i]["lat"],
         values: _db.data()["products"][i]["values"],
         reviews: _db.data()["products"][i]["reviews"],
-        outOfStock: _db.data()["products"][i]["outOfStock"] == true,
+        outOfStock: _db.data()["products"][i]["outOfStock"],
         marketedby: _db.data()["products"][i]["marketedby"],
         manufacturer: _db.data()["products"][i]["manufacturer"],
         discount: _db.data()["products"][i]["discount"],
@@ -149,7 +149,7 @@ class _ProductListScreenState extends State<ProductListScreen> {
                   .toString()
                   .toUpperCase(),
               rate: _db.data()["products"][i]["oprice"].toString(),
-              outOfStock: _db.data()["products"][i]["outOfStock"] == true,
+              outOfStock: _db.data()["products"][i]["outOfStock"],
               image: _db.data()["products"][i]["img"][0]),
         );
         setState(() {});
@@ -177,195 +177,186 @@ class _ProductListScreenState extends State<ProductListScreen> {
     setState(() {});
     return Scaffold(
       body: Center(
-        child: Column(
-          children: [
-            productList.length != 0
-                ? Expanded(
-                    child: ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: productList.length,
-                      scrollDirection: Axis.vertical,
-                      itemBuilder: (BuildContext context, int index) {
-                        if (widget.outOfStock == productList[index].outOfStock)
-                          return Padding(
-                            padding: EdgeInsets.all(height / 50),
-                            child: Container(
-                              height: height / 7,
-                              width: width / 1.3,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                border: Border.all(color: Colors.black),
+          child: Column(children: [
+        productList.length != 0
+            ? Expanded(
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: productList.length,
+                  scrollDirection: Axis.vertical,
+                  itemBuilder: (BuildContext context, int index) {
+                    if (widget.outOfStock == productList[index].outOfStock)
+                      return Padding(
+                        padding: EdgeInsets.all(height / 50),
+                        child: Container(
+                          height: height / 7,
+                          width: width / 1.3,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            border: Border.all(color: Colors.black),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              SizedBox(width: width / 20),
+                              Container(
+                                height: height / 7,
+                                width: width / 5,
+                                padding: EdgeInsets.symmetric(vertical: 5),
+                                child: Image.network(
+                                    '${productList[index].image}'),
                               ),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                crossAxisAlignment: CrossAxisAlignment.center,
+                              SizedBox(width: width / 20),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  SizedBox(width: width / 20),
-                                  Container(
-                                    height: height / 7,
-                                    width: width / 5,
-                                    padding: EdgeInsets.symmetric(vertical: 5),
-                                    child: Image.network(
-                                        '${productList[index].image}'),
-                                  ),
-                                  SizedBox(width: width / 20),
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Text(productList[index].type,
-                                          style: TextStyle(
-                                              color: Colors.grey,
-                                              fontSize: height / 70)),
-                                      SizedBox(height: height / 200),
-                                      Text(productList[index].name,
-                                          style:
-                                              TextStyle(color: Colors.black)),
-                                      SizedBox(height: height / 200),
-                                      Text(productList[index].rate,
-                                          style: TextStyle(
-                                              color: Colors.grey,
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: height / 50)),
-                                      SizedBox(height: height / 200),
-                                      Text(productList[index].offer,
-                                          style: TextStyle(
-                                              color: Colors.grey,
-                                              fontSize: height / 70)),
-                                    ],
-                                  ),
-                                  Flexible(child: SizedBox(width: width / 9)),
-                                  Switch(
-                                      value: !productList[index].outOfStock,
-                                      onChanged: (value) async {
-                                        var productIndex = productsFirebase[
-                                            productList[productList[index]
-                                                    .firebaseIndex]
-                                                .firebaseIndex];
-
-                                        setState(() {
-                                          productIndex.outOfStock =
-                                              !widget.outOfStock;
-                                        });
-
-                                        await FirebaseFirestore.instance
-                                            .collection('shop')
-                                            .doc('${widget.categoryNumber}')
-                                            .update({
-                                          "products": FieldValue.arrayRemove([
-                                            {
-                                              "category": productIndex.category,
-                                              "outOfStock":
-                                                  !productIndex.outOfStock,
-                                              "brand": productIndex.brand,
-                                              "desc": productIndex.desc,
-                                              "discount": productIndex.discount,
-                                              "deliveryAmount":
-                                                  productIndex.delivery,
-                                              "name": productIndex.name,
-                                              "oprice": productIndex.oprice,
-                                              "isveg": productIndex.isveg,
-                                              "life": productIndex.life,
-                                              "lat": productIndex.lat,
-                                              "long": productIndex.long,
-                                              "mprice": productIndex.mprice,
-                                              "gstAmount": productIndex.gst,
-                                              "id": "${productIndex.id}",
-                                              "sellerid":
-                                                  "${productIndex.sellerid}",
-                                              "seller": productIndex.seller,
-                                              "rnr": productIndex.rnr,
-                                              "freq": productIndex.freq,
-                                              "manufacturer":
-                                                  productIndex.manufacturer,
-                                              "marketedby":
-                                                  productIndex.marketedby,
-                                              "img": productIndex.img,
-                                              "units": productIndex.units,
-                                              "reviews": productIndex.reviews,
-                                              "values": productIndex.values,
-                                            }
-                                          ]),
-                                        });
-                                        await FirebaseFirestore.instance
-                                            .collection('shop')
-                                            .doc('${widget.categoryNumber}')
-                                            .update({
-                                          "products": FieldValue.arrayUnion([
-                                            {
-                                              "category": productIndex.category,
-                                              "outOfStock":
-                                                  productIndex.outOfStock,
-                                              "brand": productIndex.brand,
-                                              "desc": productIndex.desc,
-                                              "discount": productIndex.discount,
-                                              "name": productIndex.name,
-                                              "oprice": productIndex.oprice,
-                                              "isveg": productIndex.isveg,
-                                              "life": productIndex.life,
-                                              "lat": productIndex.lat,
-                                              "long": productIndex.long,
-                                              "mprice": productIndex.mprice,
-                                              "gstAmount": productIndex.gst,
-                                              "deliveryAmount":
-                                                  productIndex.delivery,
-                                              "id": "${productIndex.id}",
-                                              "sellerid":
-                                                  "${productIndex.sellerid}",
-                                              "seller": productIndex.seller,
-                                              "rnr": productIndex.rnr,
-                                              "freq": productIndex.freq,
-                                              "manufacturer":
-                                                  productIndex.manufacturer,
-                                              "marketedby":
-                                                  productIndex.marketedby,
-                                              "img": productIndex.img,
-                                              "units": productIndex.units,
-                                              "reviews": productIndex.reviews,
-                                              "values": productIndex.values,
-                                            }
-                                          ]),
-                                        });
-                                        String text = productIndex.outOfStock ==
-                                                false
-                                            ? "${productIndex.name} is in stock now"
-                                            : "${productIndex.name} is out of stock now";
-                                        UsefulMethods().showToast(text);
-                                        Navigator.pop(context);
-                                      },
-                                      activeColor: Colors.white,
-                                      activeTrackColor: Colors.blue),
+                                  Text(productList[index].type,
+                                      style: TextStyle(
+                                          color: Colors.grey,
+                                          fontSize: height / 70)),
+                                  SizedBox(height: height / 200),
+                                  Text(productList[index].name,
+                                      style: TextStyle(color: Colors.black)),
+                                  SizedBox(height: height / 200),
+                                  Text(productList[index].rate,
+                                      style: TextStyle(
+                                          color: Colors.grey,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: height / 50)),
+                                  SizedBox(height: height / 200),
+                                  Text(productList[index].offer,
+                                      style: TextStyle(
+                                          color: Colors.grey,
+                                          fontSize: height / 70)),
                                 ],
                               ),
-                            ),
-                          );
-                        else
-                          return SizedBox(height: 0);
-                      },
-                    ),
+                              Flexible(child: SizedBox(width: width / 9)),
+                              Switch(
+                                  value: !productList[index].outOfStock,
+                                  onChanged: (value) async {
+                                    var productIndex = productsFirebase[
+                                        productList[productList[index]
+                                                .firebaseIndex]
+                                            .firebaseIndex];
+
+                                    setState(() {
+                                      productIndex.outOfStock =
+                                          !widget.outOfStock;
+                                    });
+
+                                    await FirebaseFirestore.instance
+                                        .collection('shop')
+                                        .doc('${widget.categoryNumber}')
+                                        .update({
+                                      "products": FieldValue.arrayRemove([
+                                        {
+                                          "category": productIndex.category,
+                                          "outOfStock":
+                                              !productIndex.outOfStock,
+                                          "brand": productIndex.brand,
+                                          "desc": productIndex.desc,
+                                          "discount": productIndex.discount,
+                                          "deliveryAmount":
+                                              productIndex.delivery,
+                                          "name": productIndex.name,
+                                          "oprice": productIndex.oprice,
+                                          "isveg": productIndex.isveg,
+                                          "life": productIndex.life,
+                                          "lat": productIndex.lat,
+                                          "long": productIndex.long,
+                                          "mprice": productIndex.mprice,
+                                          "gstAmount": productIndex.gst,
+                                          "id": "${productIndex.id}",
+                                          "sellerid":
+                                              "${productIndex.sellerid}",
+                                          "seller": productIndex.seller,
+                                          "rnr": productIndex.rnr,
+                                          "freq": productIndex.freq,
+                                          "manufacturer":
+                                              productIndex.manufacturer,
+                                          "marketedby": productIndex.marketedby,
+                                          "img": productIndex.img,
+                                          "units": productIndex.units,
+                                          "reviews": productIndex.reviews,
+                                          "values": productIndex.values,
+                                        }
+                                      ]),
+                                    });
+
+                                    await FirebaseFirestore.instance
+                                        .collection('shop')
+                                        .doc('${widget.categoryNumber}')
+                                        .update({
+                                      "products": FieldValue.arrayUnion([
+                                        {
+                                          "category": productIndex.category,
+                                          "outOfStock": productIndex.outOfStock,
+                                          "brand": productIndex.brand,
+                                          "desc": productIndex.desc,
+                                          "discount": productIndex.discount,
+                                          "name": productIndex.name,
+                                          "oprice": productIndex.oprice,
+                                          "isveg": productIndex.isveg,
+                                          "life": productIndex.life,
+                                          "lat": productIndex.lat,
+                                          "long": productIndex.long,
+                                          "mprice": productIndex.mprice,
+                                          "gstAmount": productIndex.gst,
+                                          "deliveryAmount":
+                                              productIndex.delivery,
+                                          "id": "${productIndex.id}",
+                                          "sellerid":
+                                              "${productIndex.sellerid}",
+                                          "seller": productIndex.seller,
+                                          "rnr": productIndex.rnr,
+                                          "freq": productIndex.freq,
+                                          "manufacturer":
+                                              productIndex.manufacturer,
+                                          "marketedby": productIndex.marketedby,
+                                          "img": productIndex.img,
+                                          "units": productIndex.units,
+                                          "reviews": productIndex.reviews,
+                                          "values": productIndex.values,
+                                        }
+                                      ]),
+                                    });
+                                    print(productList);
+                                    String text = productIndex.outOfStock ==
+                                            false
+                                        ? "${productIndex.name.toUpperCase()} is in stock now"
+                                        : "${productIndex.name.toUpperCase()} is out of stock now";
+                                    UsefulMethods().showToast(text);
+                                    Navigator.pop(context);
+                                  },
+                                  activeColor: Colors.white,
+                                  activeTrackColor: Colors.blue),
+                            ],
+                          ),
+                        ),
+                      );
+                    else
+                      return SizedBox(height: 0);
+                  },
+                ),
+              )
+            : noProducts == false
+                ? Column(
+                    children: [
+                      SizedBox(height: 20),
+                      Center(child: CircularProgressIndicator())
+                    ],
                   )
-                : noProducts == false
-                    ? Column(
-                        children: [
-                          SizedBox(height: 20),
-                          Center(child: CircularProgressIndicator())
-                        ],
-                      )
-                    : Center(
-                        child: widget.outOfStock == true
-                            ? Padding(
-                                padding: EdgeInsets.all(18.0),
-                                child: Text('No Products are out of stock.',
-                                    textAlign: TextAlign.center))
-                            : Padding(
-                                padding: EdgeInsets.all(18.0),
-                                child: Text('No Products registered by you.',
-                                    textAlign: TextAlign.center))),
-          ],
-        ),
-      ),
+                : Center(
+                    child: Padding(
+                        padding: EdgeInsets.all(18.0),
+                        child: Text(
+                            widget.outOfStock == true
+                                ? 'No Products are out of stock.'
+                                : 'No Products are in stock.',
+                            textAlign: TextAlign.center)))
+      ])),
     );
   }
 }

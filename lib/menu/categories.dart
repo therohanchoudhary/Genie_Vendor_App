@@ -51,6 +51,10 @@ class _CategoryScreenState extends State<CategoryScreen> {
                 image: x["img"][0],
                 category: x["category"],
                 categoryNumber: ii));
+            var categoryNumbers =
+                categoryList.map((e) => e.categoryNumber).toSet();
+            categoryList
+                .retainWhere((x) => categoryNumbers.remove(x.categoryNumber));
           }
         }
         if (mounted) {
@@ -58,6 +62,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
         }
       }
     }
+
     if (categoryList.length == 0)
       setState(() {
         noProducts = true;

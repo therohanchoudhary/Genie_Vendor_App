@@ -12,7 +12,9 @@ class _TabBarOrderState extends State<TabBarOrder> {
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
 
-    TextStyle tabTextStyle = TextStyle(color: Colors.black, fontSize: width / 72);
+    TextStyle tabTextStyle =
+        TextStyle(color: Colors.black, fontSize: width / 72);
+
     return DefaultTabController(
       length: 6,
       child: Scaffold(
@@ -30,22 +32,21 @@ class _TabBarOrderState extends State<TabBarOrder> {
               tabs: [
                 Tab(
                     child: Text('All',
-                        style: tabTextStyle)),
+                        style: TextStyle(
+                            fontSize: width / 30, color: Colors.black))),
                 Tab(
-                    child: Text('New Order',
-                        style: tabTextStyle,textAlign: TextAlign.center,)),
+                    child: Text(
+                  'New Order',
+                  style: TextStyle(fontSize: width / 50, color: Colors.black),
+                  textAlign: TextAlign.center,
+                )),
                 Tab(
                     child: Text('Packing',
-                        style: tabTextStyle)),
-                Tab(
-                    child: Text('Shipping',
-                        style: tabTextStyle)),
-                Tab(
-                    child: Text('Delivered',
-                        style: tabTextStyle)),
-                Tab(
-                    child: Text('Return',
-                        style: tabTextStyle)),
+                        style: TextStyle(
+                            fontSize: width / 64, color: Colors.black))),
+                Tab(child: Text('Shipping', style: tabTextStyle)),
+                Tab(child: Text('Delivered', style: tabTextStyle)),
+                Tab(child: Text('Return', style: tabTextStyle)),
               ],
             ),
             Container(
