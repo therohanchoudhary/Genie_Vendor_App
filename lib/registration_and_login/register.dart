@@ -61,7 +61,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 SizedBox(height: 25),
-                Image.asset('assets/images/logo1.png'),
+                Image.asset('assets/images/logos/logo1.png'),
                 Text('Register',
                     style: TextStyle(
                         color: Colors.grey[500],

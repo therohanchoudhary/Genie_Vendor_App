@@ -48,7 +48,7 @@ class _SignatureScreen extends State<SignatureScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 SizedBox(height: 25),
-                Image.asset('assets/images/logo1.png'),
+                Image.asset('assets/images/logos/logo1.png'),
                 Center(
                     child: Text('Signature',
                         style: TextStyle(

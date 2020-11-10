@@ -25,7 +25,7 @@ class _LoginScreenState extends State<LoginScreen> {
           child: Column(
             children: [
               SizedBox(height: 25),
-              Image.asset('assets/images/logo1.png'),
+              Image.asset('assets/images/logos/logo1.png'),
               Center(
                   child: Text('LOGIN',
                       style: TextStyle(
