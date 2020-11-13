@@ -164,6 +164,7 @@ class _OrderScreenState extends State<OrderScreen> {
       ]),
     });
 
+    List list = [];
     if (a.status.toUpperCase() == 'PACKING') {
       await FirebaseFirestore.instance
           .collection('deliveryLog')
@@ -176,6 +177,10 @@ class _OrderScreenState extends State<OrderScreen> {
         "sellerEmail": FirebaseAuth.instance.currentUser.email,
         "customerName": a.cname,
         "customerAddress": a.caddress,
+        "deliveryStatus": "new",
+        "deliveryPerson": "0",
+        "price": a.oprice,
+        "rejectedBy": list,
       });
     }
 
@@ -327,200 +332,226 @@ class _OrderScreenState extends State<OrderScreen> {
         child: Scaffold(
       body: orderList.length != 0
           ? showUltimateSpinner == true
-          ? Center(child: CircularProgressIndicator())
-          : Column(
-              children: [
-                Flexible(
-                  child: ListView.builder(
-                    shrinkWrap: true,
-                    itemCount: orderList.length,
-                    scrollDirection: Axis.vertical,
-                    itemBuilder: (BuildContext context, int index) {
-                      if ((orderList[index].orderStatus ==
-                              widget.orderStatus) ||
-                          (widget.orderStatus == 'All') ||
-                          (orderList[index].orderStatus == "Waiting.." &&
-                              widget.orderStatus == 'New Order')) {
-                        return Column(
-                                children: [
-                                  Container(
-                                    height: height / 2.5,
-                                    width: width / 1.2,
-                                    padding: EdgeInsets.symmetric(
-                                        horizontal: width / 20,
-                                        vertical: height / 80),
-                                    decoration: BoxDecoration(
-                                      border: Border.all(color: Colors.grey),
-                                      borderRadius:
-                                          BorderRadius.circular(height / 80),
-                                    ),
-                                    child: Center(
-                                      child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                              'Order #${orderList[index].orderNumber}',
-                                              style: TextStyle(
-                                                  color: Colors.grey,
-                                                  fontSize: height / 70)),
-                                          SizedBox(height: height / 90),
-                                          Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Text(orderList[index].orderStatus,
-                                                  style: TextStyle(
-                                                      color: Colors.grey,
-                                                      fontSize: height / 70)),
-                                              Text(
-                                                  orderList[index].recieverName,
-                                                  style: TextStyle(
-                                                      color: Colors.grey,
-                                                      fontSize: height / 70)),
-                                            ],
-                                          ),
-                                          SizedBox(height: height / 70),
-                                          Text(orderList[index].productName,
-                                              style: TextStyle(
-                                                  fontSize: height / 50,
-                                                  fontWeight: FontWeight.bold)),
-                                          SizedBox(height: height / 50),
-                                          Row(
-                                            children: [
-                                              Text('Total Bill: ₹ ',
-                                                  style: TextStyle(
-                                                      fontSize: height / 70)),
-                                              Text('${orderList[index].price}',
-                                                  style: TextStyle(
-                                                      fontSize: height / 70,
-                                                      fontWeight:
-                                                          FontWeight.bold)),
-                                            ],
-                                          ),
-                                          SizedBox(height: height / 100),
-                                          Row(
-                                            children: [
-                                              Text('Status: ',
-                                                  style: TextStyle(
-                                                      fontSize: height / 70)),
-                                              Text(
-                                                  '${orderList[index].paymentStatus}',
-                                                  style: TextStyle(
-                                                      fontSize: height / 70,
-                                                      fontWeight:
-                                                          FontWeight.bold)),
-                                            ],
-                                          ),
-                                          SizedBox(height: height / 60),
-                                          Row(
-                                            children: [
-                                              Container(
-                                                  decoration: BoxDecoration(
-                                                      shape: BoxShape.circle,
-                                                      border: Border.all(
-                                                          color: Colors
-                                                              .grey[400])),
-                                                  padding: EdgeInsets.all(
-                                                      height / 180),
-                                                  child: Icon(Icons
-                                                      .location_on_rounded)),
-                                              SizedBox(width: width / 30),
-                                              Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  Container(
-                                                    width: width / 1.8,
-                                                    child: Text(
-                                                        orderList[index]
-                                                            .addressReciever,
-                                                        maxLines: 2,
-                                                        style: TextStyle(
-                                                            fontSize:
-                                                                height / 70),
-                                                        textAlign:
-                                                            TextAlign.left),
-                                                  ),
-                                                  SizedBox(
-                                                      height: height / 200),
-                                                  Text(
+              ? Center(child: CircularProgressIndicator())
+              : Column(
+                  children: [
+                    Flexible(
+                      child: ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: orderList.length,
+                        scrollDirection: Axis.vertical,
+                        itemBuilder: (BuildContext context, int index) {
+                          if ((orderList[index].orderStatus ==
+                                  widget.orderStatus) ||
+                              (widget.orderStatus == 'All') ||
+                              (orderList[index].orderStatus == "Waiting.." &&
+                                  widget.orderStatus == 'New Order')) {
+                            return Column(
+                              children: [
+                                Container(
+                                  height: height / 2.5,
+                                  width: width / 1.2,
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: width / 20,
+                                      vertical: height / 80),
+                                  decoration: BoxDecoration(
+                                    border: Border.all(color: Colors.grey),
+                                    borderRadius:
+                                        BorderRadius.circular(height / 80),
+                                  ),
+                                  child: Center(
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                            'Order #${orderList[index].orderNumber}',
+                                            style: TextStyle(
+                                                color: Colors.grey,
+                                                fontSize: height / 70)),
+                                        SizedBox(height: height / 90),
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Text(orderList[index].orderStatus,
+                                                style: TextStyle(
+                                                    color: Colors.grey,
+                                                    fontSize: height / 70)),
+                                            Text(orderList[index].recieverName,
+                                                style: TextStyle(
+                                                    color: Colors.grey,
+                                                    fontSize: height / 70)),
+                                          ],
+                                        ),
+                                        SizedBox(height: height / 70),
+                                        Text(orderList[index].productName,
+                                            style: TextStyle(
+                                                fontSize: height / 50,
+                                                fontWeight: FontWeight.bold)),
+                                        SizedBox(height: height / 50),
+                                        Row(
+                                          children: [
+                                            Text('Total Bill: ₹ ',
+                                                style: TextStyle(
+                                                    fontSize: height / 70)),
+                                            Text('${orderList[index].price}',
+                                                style: TextStyle(
+                                                    fontSize: height / 70,
+                                                    fontWeight:
+                                                        FontWeight.bold)),
+                                          ],
+                                        ),
+                                        SizedBox(height: height / 100),
+                                        Row(
+                                          children: [
+                                            Text('Status: ',
+                                                style: TextStyle(
+                                                    fontSize: height / 70)),
+                                            Text(
+                                                '${orderList[index].paymentStatus}',
+                                                style: TextStyle(
+                                                    fontSize: height / 70,
+                                                    fontWeight:
+                                                        FontWeight.bold)),
+                                          ],
+                                        ),
+                                        SizedBox(height: height / 60),
+                                        Row(
+                                          children: [
+                                            Container(
+                                                decoration: BoxDecoration(
+                                                    shape: BoxShape.circle,
+                                                    border: Border.all(
+                                                        color:
+                                                            Colors.grey[400])),
+                                                padding: EdgeInsets.all(
+                                                    height / 180),
+                                                child: Icon(
+                                                    Icons.location_on_rounded)),
+                                            SizedBox(width: width / 30),
+                                            Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Container(
+                                                  width: width / 1.8,
+                                                  child: Text(
                                                       orderList[index]
-                                                          .mobileNumber,
+                                                          .addressReciever,
+                                                      maxLines: 2,
                                                       style: TextStyle(
                                                           fontSize:
-                                                              height / 90),
+                                                              height / 70),
                                                       textAlign:
                                                           TextAlign.left),
-                                                ],
-                                              )
-                                            ],
-                                          ),
-                                          SizedBox(height: height / 60),
-                                          orderList[index].orderStatus ==
-                                                  'Packing'
-                                              ? Center(
-                                                  child: GestureDetector(
-                                                    onTap: () {
-                                                      onTapChangeStatus(
-                                                          "Shipping",
-                                                          orderList[index]
-                                                              .documentID,
-                                                          orderList[index]
-                                                              .firebaseIndex);
+                                                ),
+                                                SizedBox(height: height / 200),
+                                                Text(
+                                                    orderList[index]
+                                                        .mobileNumber,
+                                                    style: TextStyle(
+                                                        fontSize: height / 90),
+                                                    textAlign: TextAlign.left),
+                                              ],
+                                            )
+                                          ],
+                                        ),
+                                        SizedBox(height: height / 60),
+                                        orderList[index].orderStatus ==
+                                                'Packing'
+                                            ? Center(
+                                                child: GestureDetector(
+                                                  onTap: () {
+                                                    onTapChangeStatus(
+                                                        "Shipping",
+                                                        orderList[index]
+                                                            .documentID,
+                                                        orderList[index]
+                                                            .firebaseIndex);
 
-                                                      orderList[index]
-                                                              .orderStatus =
-                                                          'Shipping';
-                                                      if (mounted)
-                                                        setState(() {});
-                                                    },
-                                                    child: _buttonContainer(
-                                                        'Order Ready',
-                                                        Colors.blue,
-                                                        15,
-                                                        2.3),
-                                                  ),
-                                                )
-                                              : Container(),
-                                          orderList[index].orderStatus ==
-                                                  'Delivered'
-                                              ? Center(
-                                                  child: _buttonContainer(
-                                                      'Delivered',
-                                                      Colors.grey,
-                                                      15,
-                                                      2.3))
-                                              : Container(),
-                                          orderList[index].orderStatus ==
-                                                  'Shipping'
-                                              ? Center(
+                                                    orderList[index]
+                                                            .orderStatus =
+                                                        'Shipping';
+                                                    if (mounted)
+                                                      setState(() {});
+                                                  },
                                                   child: _buttonContainer(
                                                       'Order Ready',
-                                                      Colors.grey,
+                                                      Colors.blue,
                                                       15,
-                                                      2.3))
-                                              : Container(),
-                                          orderList[index].orderStatus ==
-                                                      'Waiting..' ||
-                                                  orderList[index]
-                                                          .orderStatus ==
-                                                      'Return' // Waiting.. is new order
-                                              ? Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.center,
-                                                  children: [
-                                                      Center(
+                                                      2.3),
+                                                ),
+                                              )
+                                            : Container(),
+                                        orderList[index].orderStatus ==
+                                                'Delivered'
+                                            ? Center(
+                                                child: _buttonContainer(
+                                                    'Delivered',
+                                                    Colors.grey,
+                                                    15,
+                                                    2.3))
+                                            : Container(),
+                                        orderList[index].orderStatus ==
+                                                'Shipping'
+                                            ? Center(
+                                                child: _buttonContainer(
+                                                    'Order Ready',
+                                                    Colors.grey,
+                                                    15,
+                                                    2.3))
+                                            : Container(),
+                                        orderList[index].orderStatus ==
+                                                    'Waiting..' ||
+                                                orderList[index].orderStatus ==
+                                                    'Return' // Waiting.. is new order
+                                            ? Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: [
+                                                    Center(
+                                                      child: GestureDetector(
+                                                          onTap: () async {
+                                                            onTapChangeStatus(
+                                                                orderList[index]
+                                                                            .orderStatus ==
+                                                                        'Waiting..'
+                                                                    ? "Rejected Order"
+                                                                    : "Rejected Refund",
+                                                                orderList[index]
+                                                                    .documentID,
+                                                                orderList[index]
+                                                                    .firebaseIndex);
+                                                            setState(() {
+                                                              orderList.remove(
+                                                                  orderList[
+                                                                      index]);
+                                                            });
+                                                            if (mounted)
+                                                              setState(() {});
+                                                          },
+                                                          child:
+                                                              _buttonContainer(
+                                                                  'Reject',
+                                                                  Colors.red,
+                                                                  20,
+                                                                  3)),
+                                                    ),
+                                                    Flexible(
+                                                        child: SizedBox(
+                                                            width: width / 30)),
+                                                    Center(
                                                         child: GestureDetector(
                                                             onTap: () async {
                                                               onTapChangeStatus(
                                                                   orderList[index]
                                                                               .orderStatus ==
                                                                           'Waiting..'
-                                                                      ? "Rejected Order"
-                                                                      : "Rejected Refund",
+                                                                      ? "Packing"
+                                                                      : "Accepted Refund",
                                                                   orderList[
                                                                           index]
                                                                       .documentID,
@@ -528,70 +559,37 @@ class _OrderScreenState extends State<OrderScreen> {
                                                                           index]
                                                                       .firebaseIndex);
                                                               setState(() {
-                                                                orderList.remove(
-                                                                    orderList[
-                                                                        index]);
+                                                                orderList[index]
+                                                                        .orderStatus =
+                                                                    'Packing';
                                                               });
-                                                              if (mounted)
-                                                                setState(() {});
                                                             },
                                                             child:
                                                                 _buttonContainer(
-                                                                    'Reject',
-                                                                    Colors.red,
+                                                                    'Accept',
+                                                                    Colors
+                                                                        .green,
                                                                     20,
-                                                                    3)),
-                                                      ),
-                                                      Flexible(
-                                                          child: SizedBox(
-                                                              width:
-                                                                  width / 30)),
-                                                      Center(
-                                                          child:
-                                                              GestureDetector(
-                                                                  onTap:
-                                                                      () async {
-                                                                    onTapChangeStatus(
-                                                                        orderList[index].orderStatus ==
-                                                                                'Waiting..'
-                                                                            ? "Packing"
-                                                                            : "Accepted Refund",
-                                                                        orderList[index]
-                                                                            .documentID,
-                                                                        orderList[index]
-                                                                            .firebaseIndex);
-                                                                    setState(
-                                                                        () {
-                                                                      orderList[index]
-                                                                              .orderStatus =
-                                                                          'Packing';
-                                                                    });
-                                                                  },
-                                                                  child: _buttonContainer(
-                                                                      'Accept',
-                                                                      Colors
-                                                                          .green,
-                                                                      20,
-                                                                      3)))
-                                                    ])
-                                              : Container()
-                                        ],
-                                      ),
+                                                                    3)))
+                                                  ])
+                                            : Container()
+                                      ],
                                     ),
                                   ),
-                                  SizedBox(height: height / 50)
-                                ],
-                              );
-                      } else
-                        return Container();
-                    },
-                  ),
+                                ),
+                                SizedBox(height: height / 50)
+                              ],
+                            );
+                          } else
+                            return Container();
+                        },
+                      ),
+                    )
+                  ],
                 )
-              ],
-            )
           : Center(
               child: entriesTotal == 0
-                  ? Text('No pending orders.', textAlign: TextAlign.center)
+                  ? Text(' No pending orders.', textAlign: TextAlign.center)
                   : CircularProgressIndicator()),
     ));
   }

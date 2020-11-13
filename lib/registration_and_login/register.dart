@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:vendor_app/registration_and_login/login.dart';
 import 'package:vendor_app/registration_and_login/register_business_details.dart';
