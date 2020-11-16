@@ -63,10 +63,11 @@ class _CategoryScreenState extends State<CategoryScreen> {
       }
     }
 
-    if (categoryList.length == 0)
+    if (categoryList.length == 0) {
       setState(() {
         noProducts = true;
       });
+    }
   }
 
   @override

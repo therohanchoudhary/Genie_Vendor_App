@@ -151,7 +151,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          userName != null
+                          userName != null && userName.toLowerCase() != "null"
                               ? Text(userName,
                                   style: TextStyle(
                                       color: Colors.white,
