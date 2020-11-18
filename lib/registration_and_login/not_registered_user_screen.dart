@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:vendor_app/registration_and_login/login.dart';
 
 class WaitingScreen extends StatefulWidget {
   @override
@@ -53,8 +54,12 @@ class _WaitingScreenState extends State<WaitingScreen> {
                         color: Colors.blue,
                         decoration: TextDecoration.underline,
                         fontSize: 10)),
-                onTap: () {
-                  FirebaseAuth.instance.signOut();
+                onTap: () async {
+                  await FirebaseAuth.instance.signOut();
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (BuildContext context) => LoginScreen()));
                 },
               ),
             ],
