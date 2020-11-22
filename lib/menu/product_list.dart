@@ -203,7 +203,7 @@ class _ProductListScreenState extends State<ProductListScreen> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            SizedBox(width: width / 20),
+                            Flexible(child: SizedBox(width: width / 20)),
                             Container(
                               height: height / 7,
                               width: width / 5,

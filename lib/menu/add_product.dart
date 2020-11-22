@@ -46,6 +46,8 @@ class _AddProductState extends State<AddProduct> {
   TextEditingController deliveryCharge = TextEditingController();
   TextEditingController descriptionEntered = TextEditingController();
   TextEditingController offersEntered = TextEditingController();
+  TextEditingController manufacturer = TextEditingController();
+  TextEditingController marketed = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -216,13 +218,14 @@ class _AddProductState extends State<AddProduct> {
               _textField('Description', TextInputType.name, descriptionEntered),
               _textField(
                   'Offer (Discount%)', TextInputType.number, offersEntered),
+              _textField('Manufacturer', TextInputType.name, manufacturer),
+              _textField('Marketed By', TextInputType.name, marketed),
               SizedBox(height: height / 40),
               GestureDetector(
                 onTap: () async {
                   setState(() {
                     showSpinner = true;
                   });
-
                   int x;
                   var id;
                   String sellerName;
@@ -255,6 +258,10 @@ class _AddProductState extends State<AddProduct> {
                       gstAmount.text != "" &&
                       deliveryCharge.text != null &&
                       deliveryCharge.text != "" &&
+                      manufacturer.text != null &&
+                      manufacturer.text!="" &&
+                      marketed.text != null &&
+                      marketed.text!="" &&
                       widget.url1 != null &&
                       widget.url2 != null &&
                       widget.url3 != null &&
@@ -295,8 +302,8 @@ class _AddProductState extends State<AddProduct> {
                           "rnr": "Refund Policy",
                           "freq": freq,
                           "outOfStock": false,
-                          "manufacturer": "Manufacturer",
-                          "marketedby": "Marketer",
+                          "manufacturer": manufacturer.text,
+                          "marketedby": marketed.text,
                           "img": [
                             widget.url1,
                             widget.url2,
