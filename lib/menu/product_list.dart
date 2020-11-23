@@ -95,6 +95,7 @@ class _ProductListScreenState extends State<ProductListScreen> {
   List<ProductFirebase> productsFirebase = [];
   bool noProducts = false;
   bool showSpinner = false;
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   Future _getData(String email) async {
     setState(() {
@@ -188,6 +189,7 @@ class _ProductListScreenState extends State<ProductListScreen> {
 
     setState(() {});
     return Scaffold(
+      key: _scaffoldKey,
       body: Center(
         child: showSpinner == true
             ? Column(mainAxisAlignment: MainAxisAlignment.center, children: [
@@ -414,13 +416,12 @@ class _ProductListScreenState extends State<ProductListScreen> {
                                                 showSpinner = false;
                                               });
                                               Navigator.push(
-                                                  context,
+                                                  _scaffoldKey.currentContext,
                                                   MaterialPageRoute(
                                                       builder: (BuildContext
                                                               context) =>
                                                           BottomNavigationBarScreen()));
                                             },
-
                                             activeColor: Colors.white,
                                             activeTrackColor: Colors.blue)
                                       ],
